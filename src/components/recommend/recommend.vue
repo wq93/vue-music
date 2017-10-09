@@ -1,5 +1,7 @@
 <template>
- <div>I am recommend</div>
+ <div>
+   I am recommend
+ </div>
 </template>
 
 <script type="text/ecmascript-6">
