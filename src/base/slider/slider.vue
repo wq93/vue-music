@@ -5,7 +5,9 @@
       <slot></slot>
     </div>
     <div class="dots">
-
+      <ul>
+        <li v-for="(item,index) in dots" class="dot" :class="{active:index === currentPageIndex}"></li>
+      </ul>
     </div>
   </div>
 </template>
@@ -15,6 +17,12 @@
   import {addClass} from '../../common/js/dom'
 
   export default {
+    data() {
+      return {
+        dots: [],
+        currentPageIndex: 0 // 当前图片的圆点
+      }
+    },
     props: {
       loop: { // 是否轮播
         type: Boolean,
@@ -33,10 +41,24 @@
       setTimeout(() => {
         this._setSliderWidth()
         this._initSlider()
+        this._initDots()
+
+        // 自动轮播
+        if (this.autoPlay) {
+          this._play()
+        }
       }, 20)
+
+      window.addEventListener('resize', () => {
+        if (!this.slier) {
+          return
+        }
+        this._setSliderWidth(true) // 如果窗口大小发生改变
+        this.slider.refresh()
+      })
     },
     methods: {
-      _setSliderWidth() {
+      _setSliderWidth(isResize) {
         this.children = this.$refs.sliderGroup.children
 
         let width = 0
@@ -49,7 +71,7 @@
           width += sliderWidth
         }
 
-        if (this.loop) { // 如果需要轮播 加宽度
+        if (this.loop && !isResize) { // 如果需要轮播 加宽度 (第一次设置的时候)
           width += 2 * sliderWidth
         }
         this.$refs.sliderGroup.style.width = width + 'px'
@@ -65,6 +87,32 @@
           snapThreshold: 0.3,
           snapSpeed: 400
         })
+
+        // 滑动完毕事件
+        this.slider.on('scrollEnd', () => {
+          let pageIndex = this.slider.getCurrentPage().pageX
+
+          if (this.loop) {
+            pageIndex -= 1
+          }
+          this.currentPageIndex = pageIndex
+          if (this.autoPlay) {
+            clearTimeout(this.timer)
+            this._play()
+          }
+        })
+      },
+      _initDots() {
+        this.dots = new Array(this.children.length)
+      },
+      _play() {
+        let pageIndex = this.currentPageIndex + 1
+        if (this.loop) {
+          pageIndex += 1
+        }
+        this.timer = setTimeout(() => {
+          this.slider.goToPage(pageIndex, 0, 400)
+        }, this.interval)
       }
     }
   }
