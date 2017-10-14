@@ -103,7 +103,7 @@
         })
       },
       _initDots() {
-        this.dots = new Array(this.children.length)
+        this.dots = new Array(this.children.length - 2)
       },
       _play() {
         let pageIndex = this.currentPageIndex + 1
