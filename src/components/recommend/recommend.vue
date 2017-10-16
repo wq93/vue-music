@@ -1,12 +1,13 @@
 <template>
   <div class="recommend">
-    <scroll class="recommend-content" :data="disList" ref="scroll">
+    <scroll class="recommend-content" :data="discList" ref="scroll">
       <div>
         <div v-if="recommends.length" class="slider-wrapper">
           <slider>
             <div v-for="item in recommends">
               <a :href="item.linkUrl">
-                <img @load="imgLoading" :src="item.picUrl">
+                <!--但fastclick监听到dom有needsclick这个类名时,就不会去拦截点击-->
+                <img class="needsclick" @load="imgLoading" :src="item.picUrl">
               </a>
             </div>
             s
@@ -15,9 +16,9 @@
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
           <ul>
-            <li v-for="item in disList" class="item">
+            <li v-for="item in discList" class="item">
               <div class="icon">
-                <img width="60" height="60" :src="item.imgurl" alt="">
+                <img width="60" height="60" v-lazy="item.imgurl" alt="">
               </div>
               <div class="text">
                 <h2 class="name" v-html="item.creator.name"></h2>
@@ -27,11 +28,16 @@
           </ul>
         </div>
       </div>
+      <!--正在载入过渡-->
+      <div class="loading-container" v-show="!discList.length">
+        <loading></loading>
+      </div>
     </scroll>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import Loading from '../../base/loading/loading.vue'
   import Scroll from '../../base/scroll/scroll.vue'
   import Slider from '../../base/slider/slider.vue'
   import {getRecommend, getDiscList} from '../../api/recommend'
@@ -41,7 +47,7 @@
     data() {
       return {
         recommends: [],
-        disList: []
+        discList: []
       }
     },
     created() { // 生命周期钩子
@@ -59,7 +65,7 @@
       _getDiscList() { // 调用封装的api请求歌单数据
         getDiscList().then((res) => {
           if (res.code === ERR_OK) {
-            this.disList = res.data.list
+            this.discList = res.data.list
           }
         })
       },
@@ -72,7 +78,8 @@
     },
     components: {
       Slider,
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>
