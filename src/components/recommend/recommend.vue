@@ -1,12 +1,12 @@
 <template>
   <div class="recommend">
-    <scroll class="recommend-content" :data="disList">
+    <scroll class="recommend-content" :data="disList" ref="scroll">
       <div>
         <div v-if="recommends.length" class="slider-wrapper">
           <slider>
             <div v-for="item in recommends">
               <a :href="item.linkUrl">
-                <img :src="item.picUrl">
+                <img @load="imgLoading" :src="item.picUrl">
               </a>
             </div>
             s
@@ -62,6 +62,12 @@
             this.disList = res.data.list
           }
         })
+      },
+      imgLoading() { // 图片完成加载,刷新,确保轮播图图片已占位
+        if (!this.checkLoaded) {
+          this.$refs.scroll.refresh()
+          this.checkLoaded = true
+        }
       }
     },
     components: {
