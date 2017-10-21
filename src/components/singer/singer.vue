@@ -55,8 +55,26 @@
             id: item.Fsinger_mid,
             name: item.Fsinger_name
           }))
-          console.log(map)
         })
+        // 为了得到有序列表,我们需要处理map数组
+        this._orderedSingerList(map)
+      },
+      _orderedSingerList(map) {
+        let hot = []
+        let ret = []
+        for (let key in map) {
+          let val = map[key]
+          if (val.title.match(/[a-zA-Z]/)) {
+            ret.push(val)
+          } else if (val.title === HOT_NAME) {
+            hot.push(val)
+          }
+        }
+        // 根据首字符排序
+        ret.sort((a, b) => {
+          return a.title.charCodeAt(0) - b.title.charCodeAt(0)
+        })
+        console.log(ret)
       }
     }
   }
