@@ -7,7 +7,7 @@
         <ul>
           <!--类歌手-->
           <li v-for="item in group.items" class="list-group-item">
-            <img :src="item.avatar" class="avatar">
+            <img v-lazy="item.avatar" class="avatar">
             <span class="name">{{item.name}}</span>
           </li>
         </ul>
