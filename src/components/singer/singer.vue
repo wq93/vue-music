@@ -1,6 +1,6 @@
 <template>
   <div class="singer">
-    I am singer
+    <list-view :data="singers"></list-view>
   </div>
 </template>
 
@@ -8,6 +8,8 @@
   import {getSingerList} from '../../api/singer'
   import {ERR_OK} from '../../api/config'
   import Singer from '../../common/js/singer' // 封装的热门歌手信息的class
+
+  import ListView from '../../base/listview/listview.vue'
   const HOT_NAME = '热门'
   const HOT_SINGER_LEN = 10
   export default {
@@ -23,8 +25,7 @@
       _getSingerList() {
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
-            this.singers = res.data.list
-            console.log(this._normalizeSinger(this.singers))
+            this.singers = this._normalizeSinger(res.data.list)
           }
         })
       },
@@ -57,7 +58,7 @@
           }))
         })
         // 为了得到有序列表,我们需要处理map数组
-        this._orderedSingerList(map)
+        return this._orderedSingerList(map)
       },
       _orderedSingerList(map) {
         let hot = []
@@ -74,8 +75,11 @@
         ret.sort((a, b) => {
           return a.title.charCodeAt(0) - b.title.charCodeAt(0)
         })
-        console.log(ret)
+        return hot.concat(ret)
       }
+    },
+    components: {
+      ListView
     }
   }
 </script>
