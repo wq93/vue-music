@@ -13,9 +13,9 @@
         </ul>
       </li>
     </ul>
-    <div class="list-shortcut">
+    <div class="list-shortcut" @touchstart="onShortcutTouchStart">
       <ul>
-        <li v-for="item in shortcutList" class="item">
+        <li v-for="(item,index) in shortcutList" class="item" :data-index="index">
           {{item}}
         </li>
       </ul>
@@ -37,6 +37,11 @@
         return this.data.map((group) => {
           return group.title.substr(0, 1)
         })
+      }
+    },
+    methods: {
+      onShortcutTouchStart(e) {
+        console.log(e)
       }
     },
     components: {
