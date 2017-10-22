@@ -1,7 +1,7 @@
 <template>
-  <scroll class="listview" :data="data">
+  <scroll class="listview" :data="data" ref="listview">
     <ul>
-      <li v-for="group in data" class="list-group">
+      <li v-for="group in data" class="list-group" ref="listGroup">
         <!--首字母-->
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
@@ -13,7 +13,9 @@
         </ul>
       </li>
     </ul>
-    <div class="list-shortcut" @touchstart="onShortcutTouchStart">
+    <div class="list-shortcut"
+         @touchstart.stop.prevent="onShortcutTouchStart"
+         @touchmove.stop.prevent="onShortcutMove">
       <ul>
         <li v-for="(item,index) in shortcutList" class="item" :data-index="index">
           {{item}}
@@ -25,8 +27,15 @@
 
 <script type="text/ecmascript-6">
   import Scroll from '../../base/scroll/scroll.vue'
-  import getData from '../../common/js/dom'
+  import {getData} from '../../common/js/dom'
+
+  const ANCHOR_HEIGHT = 18
   export default {
+    created() {
+      // 因为我们定义的数据只是为了在当前view共享变量,
+      // 所以我们不需要写在data/props中,vue会将这两个对象中的数据进行观测
+      this.touch = {}
+    },
     props: {
       data: {
         type: Array,
@@ -42,8 +51,21 @@
     },
     methods: {
       onShortcutTouchStart(e) {
-        let anchorIndex = getData(e.target,'index')
-
+        let anchorIndex = getData(e.target, 'index')
+        let firstTouch = e.touches[0] // 第一次触摸时的坐标点
+        this.touch.y1 = firstTouch.pageY
+        this.touch.anchorIndex = anchorIndex // 记录当前dom对象的索引
+        this._scrollTo(anchorIndex)
+      },
+      onShortcutMove(e) {
+        let firstTouch = e.touches[0] // 第一次触摸时的坐标点
+        this.touch.y2 = firstTouch.pageY
+        let delta = (this.touch.y1 - this.touch.y2) / ANCHOR_HEIGHT | 0 // y轴的偏移量
+        let anchorIndex = this.touch.anchorIndex + delta
+        this._scrollTo(anchorIndex)
+      },
+      _scrollTo (index) {
+        this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
       }
     },
     components: {
