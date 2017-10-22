@@ -25,6 +25,7 @@
 
 <script type="text/ecmascript-6">
   import Scroll from '../../base/scroll/scroll.vue'
+  import getData from '../../common/js/dom'
   export default {
     props: {
       data: {
@@ -41,7 +42,8 @@
     },
     methods: {
       onShortcutTouchStart(e) {
-        console.log(e)
+        let anchorIndex = getData(e.target,'index')
+
       }
     },
     components: {
