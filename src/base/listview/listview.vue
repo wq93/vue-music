@@ -3,7 +3,8 @@
           :data="data"
           ref="listview"
           :listenScroll="listenScroll"
-          @scroll="scroll">
+          @scroll="scroll"
+          :probeType="3">
     <ul>
       <li v-for="group in data" class="list-group" ref="listGroup">
         <!--首字母-->
@@ -21,7 +22,10 @@
          @touchstart.stop.prevent="onShortcutTouchStart"
          @touchmove.stop.prevent="onShortcutMove">
       <ul>
-        <li v-for="(item,index) in shortcutList" class="item" :data-index="index">
+        <li v-for="(item,index) in shortcutList"
+            class="item"
+            :data-index="index"
+            :class="{'current':currentIndex===index}">
           {{item}}
         </li>
       </ul>
@@ -50,7 +54,7 @@
       }
     },
     props: {
-      data: {
+      data: { // 歌手数据,父组件singer传递进来的
         type: Array,
         default: []
       }
@@ -102,9 +106,22 @@
       },
       scrollY(newY) {
         const listHeight = this.listHeight
-        $.each(listHeight, (i, v) => {
-
-        })
+        // 当滚动到顶部,newY>0
+        if (newY > 0) {
+          this.currentIndex = 0
+          return
+        }
+        // 当滚动到中部
+        for (let i = 0; i < listHeight.length - 1; i++) {
+          let height1 = listHeight[i]
+          let height2 = listHeight[i + 1]
+          if (-newY >= height1 && -newY < height2) {
+            this.currentIndex = i
+            return
+          }
+        }
+        // 当滚动到底部,且-newY大于最后一个元素的上限
+        this.currentIndex = listHeight.length - 2 // 比右侧快速入口多2个
       }
     },
     components: {
