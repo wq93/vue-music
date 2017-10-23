@@ -1,5 +1,9 @@
 <template>
-  <scroll class="listview" :data="data" ref="listview">
+  <scroll class="listview"
+          :data="data"
+          ref="listview"
+          :listenScroll="listenScroll"
+          @scroll="scroll">
     <ul>
       <li v-for="group in data" class="list-group" ref="listGroup">
         <!--首字母-->
@@ -35,6 +39,14 @@
       // 因为我们定义的数据只是为了在当前view共享变量,
       // 所以我们不需要写在data/props中,vue会将这两个对象中的数据进行观测
       this.touch = {}
+      this.listenScroll = true // 需要scroll组件添加scroll事件监听
+      this.listHeight = []
+    },
+    data() {
+      return {
+        scrollY: -1,
+        currentIndex: 0
+      }
     },
     props: {
       data: {
@@ -62,11 +74,35 @@
         this.touch.y2 = firstTouch.pageY
         let delta = (this.touch.y1 - this.touch.y2) / ANCHOR_HEIGHT | 0 // y轴的偏移量
         let anchorIndex = parseInt(this.touch.anchorIndex) + delta
-        console.log(anchorIndex)
         this._scrollTo(anchorIndex)
       },
-      _scrollTo (index) {
+      scroll(pos) {
+        this.scrollY = pos.y
+
+      },
+      _scrollTo(index) {
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
+      },
+      _calculateHeight() { // 计算每个list的dom高度
+        this.listHeight = []
+        const list = this.$refs.listGroup
+        let height = 0
+        this.listHeight.push(height)
+        for (let i = 0; i < list.length; i++) {
+          let item = list[i]
+          height += item.clientHeight
+          this.listHeight.push(height)
+        }
+      }
+    },
+    watch: {
+      data() {
+        setTimeout(() => {
+          this._calculateHeight() // 计算每个group的高度
+        }, 20) // 数据到dom的变化通常是20毫秒
+      },
+      scrollY(newY) {
+        const listHeight = this.listHeight
       }
     },
     components: {
