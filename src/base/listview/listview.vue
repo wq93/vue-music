@@ -61,7 +61,8 @@
         let firstTouch = e.touches[0] // 第一次触摸时的坐标点
         this.touch.y2 = firstTouch.pageY
         let delta = (this.touch.y1 - this.touch.y2) / ANCHOR_HEIGHT | 0 // y轴的偏移量
-        let anchorIndex = this.touch.anchorIndex + delta
+        let anchorIndex = parseInt(this.touch.anchorIndex) + delta
+        console.log(anchorIndex)
         this._scrollTo(anchorIndex)
       },
       _scrollTo (index) {

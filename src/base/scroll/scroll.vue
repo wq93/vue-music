@@ -19,6 +19,10 @@
       data: {
         type: Array,
         default: null
+      },
+      listenScroll: { // 是否需要监听滚动事件
+        type: Boolean,
+        default: false
       }
     },
     // dom ready时调用方法
@@ -35,8 +39,14 @@
         this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
           click: this.click
-
         })
+        // 添加监听滚动事件
+        if (this.listenScroll) {
+          let _this = this
+          this.scroll.on('scroll', (pos) => {
+            me.$emit('scroll', pos)
+          })
+        }
       },
       enable() {
         this.scroll && this.scroll.enable()
