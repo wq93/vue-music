@@ -30,6 +30,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import $ from 'jquery'
   import Scroll from '../../base/scroll/scroll.vue'
   import {getData} from '../../common/js/dom'
 
@@ -78,7 +79,6 @@
       },
       scroll(pos) {
         this.scrollY = pos.y
-
       },
       _scrollTo(index) {
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
@@ -88,11 +88,10 @@
         const list = this.$refs.listGroup
         let height = 0
         this.listHeight.push(height)
-        for (let i = 0; i < list.length; i++) {
-          let item = list[i]
-          height += item.clientHeight
+        $.each(list, (i, v) => {
+          height += v.clientHeight
           this.listHeight.push(height)
-        }
+        })
       }
     },
     watch: {
@@ -103,6 +102,9 @@
       },
       scrollY(newY) {
         const listHeight = this.listHeight
+        $.each(listHeight, (i, v) => {
+
+        })
       }
     },
     components: {
