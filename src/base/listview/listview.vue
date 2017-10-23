@@ -85,6 +85,16 @@
         this.scrollY = pos.y
       },
       _scrollTo(index) {
+        if (!index && index !== 0) { // 防止用户点击快速入口的空白部分
+          return
+        }
+        // 判断出边界
+        if (index < 0) {
+          index = 0
+        } else if (index > this.listHeight - 2) {
+          index = this.listHeight - 2
+        }
+        this.scrollY = -this.listHeight[index] // 点击右边快速入口时定位左边歌手的位置
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
       },
       _calculateHeight() { // 计算每个list的dom高度
