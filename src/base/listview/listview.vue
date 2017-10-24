@@ -30,8 +30,11 @@
         </li>
       </ul>
     </div>
-    <div class="list-fixed" v-show="fixedTitle">
+    <div class="list-fixed" v-show="fixedTitle" ref="listFixed">
       <h2 class="fixed-title">{{fixedTitle}}</h2>
+    </div>
+    <div class="loading-container" v-show="!data.length">
+      <loading></loading>
     </div>
   </scroll>
 </template>
@@ -39,9 +42,11 @@
 <script type="text/ecmascript-6">
   import $ from 'jquery'
   import Scroll from '../../base/scroll/scroll.vue'
+  import Loading from '../../base/loading/loading.vue'
   import {getData} from '../../common/js/dom'
 
   const ANCHOR_HEIGHT = 18
+  const TITLE_HEIGHT = 30
   export default {
     created() {
       // 因为我们定义的数据只是为了在当前view共享变量,
@@ -53,7 +58,8 @@
     data() {
       return {
         scrollY: -1,
-        currentIndex: 0
+        currentIndex: 0,
+        diff: -1 // 表示当前滚动区块的scrollY以父盒子顶部的间距差
       }
     },
     props: {
@@ -72,7 +78,7 @@
         if (this.scrollY > 0) {
           return ''
         }
-        return this.data[this.currentIndex].title ? this.data[this.currentIndex].title : ''
+        return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
       }
     },
     methods: {
@@ -136,15 +142,25 @@
           let height2 = listHeight[i + 1]
           if (-newY >= height1 && -newY < height2) {
             this.currentIndex = i
+            this.diff = height2 + newY
             return
           }
         }
         // 当滚动到底部,且-newY大于最后一个元素的上限
         this.currentIndex = listHeight.length - 2 // 比右侧快速入口多2个
+      },
+      diff(newVal) {
+        let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+        if (this.fixedTop === fixedTop) {
+          return
+        }
+        this.fixedTop = fixedTop
+        this.$refs.listFixed.style.transform = `translate3d(0,${fixedTop}px,0)`
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>
