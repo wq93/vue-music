@@ -4,10 +4,10 @@
       <i class="icon-back"></i>
     </div>
     <h1 class="title" v-html="title"></h1>
-    <div class="bg-image" :style="bgStyle">
+    <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="filter"></div>
     </div>
-    <scroll :data="songs" class="list" res="songlist">
+    <scroll :data="songs" class="list" ref="songlist">
       <div class="song-list-wrapper">
         <song-list :songs="songs"></song-list>
       </div>
@@ -36,6 +36,9 @@
       bgStyle() {
         return `background-image:url(${this.bgImage})`
       }
+    },
+    mounted() {
+      this.$refs.songlist.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
     },
     components: {
       SongList,
