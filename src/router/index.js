@@ -28,7 +28,7 @@ export default new Router({
         {
           path: ':id',
           name: 'SingerDetail',
-          component: SingerDetail,
+          component: SingerDetail
         }
       ]
     },

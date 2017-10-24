@@ -11,7 +11,9 @@
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
           <!--类歌手-->
-          <li v-for="item in group.items" class="list-group-item">
+          <li v-for="item in group.items"
+              class="list-group-item"
+              @click="selectItem(item)">
             <img v-lazy="item.avatar" class="avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -82,6 +84,9 @@
       }
     },
     methods: {
+      selectItem(item) { // 将事件派发出去,以及告诉外部那个dom元素触发的
+        this.$emit('select', item)
+      },
       onShortcutTouchStart(e) {
         let anchorIndex = getData(e.target, 'index')
         let firstTouch = e.touches[0] // 第一次触摸时的坐标点
