@@ -11,8 +11,8 @@
   import {getSingerList} from '../../api/singer'
   import {ERR_OK} from '../../api/config'
   import Singer from '../../common/js/singer' // 封装的热门歌手信息的class
-
   import ListView from '../../base/listview/listview.vue'
+  import {mapMutations} from 'vuex'
   const HOT_NAME = '热门'
   const HOT_SINGER_LEN = 10
   export default {
@@ -29,6 +29,7 @@
         this.$router.push({
           path: `/singer/${singer.id}`
         })
+        this.setSinger(singer) // 相当于store.commit("SET_SINGER",singer)
       },
       _getSingerList() {
         getSingerList().then((res) => {
@@ -84,7 +85,10 @@
           return a.title.charCodeAt(0) - b.title.charCodeAt(0)
         })
         return hot.concat(ret)
-      }
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER', // 映射常量
+      })
     },
     components: {
       ListView
