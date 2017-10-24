@@ -8,6 +8,8 @@
 
 <script type="text/ecmascript-6">
   import {mapGetters} from 'vuex'
+  import {getSingerDetail} from '../../api/singer'
+  import {ERR_OK} from '../../api/config'
   export default {
     computed: {
       ...mapGetters([
@@ -15,7 +17,20 @@
       ])
     },
     created() {
-      console.log(this.singer)
+      this._getSingerDetail()
+    },
+    methods: {
+      _getSingerDetail() {
+        if (!this.singer.id) { // 因为获取歌手id是在歌手列表页(vuex设置当前点击的singer),如果我们在歌手详情页刷新页面时,我们重定向路由
+          this.$router.push('/singer')
+          return
+        }
+        getSingerDetail(this.singer.id).then((res) => {
+          if (res.code === ERR_OK) {
+            console.log(res.data.list)
+          }
+        })
+      }
     }
   }
 </script>
