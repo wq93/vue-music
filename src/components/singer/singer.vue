@@ -87,7 +87,7 @@
         return hot.concat(ret)
       },
       ...mapMutations({
-        setSinger: 'SET_SINGER', // 映射常量
+        setSinger: 'SET_SINGER' // 映射常量
       })
     },
     components: {

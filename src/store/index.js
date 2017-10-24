@@ -5,8 +5,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import * as actions from './actions'
 import * as getters from './getters'
-import * as state from './state'
-import * as mutations from './mutations'
+import state from './state'
+import mutations from './mutations'
 import createLogger from 'vuex/dist/logger' // 通过mutations修改state时,会在控制台输出日志
 
 Vue.use(Vuex)
