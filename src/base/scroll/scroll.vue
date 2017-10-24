@@ -8,7 +8,7 @@
   import BScroll from 'better-scroll'
   export default {
     props: {
-      probeType: {
+      probeType: { // better-scroll的类别
         type: Number,
         default: 1
       },

@@ -1,6 +1,7 @@
 <template>
   <div class="singer">
     <list-view :data="singers"></list-view>
+    <router-view></router-view>
   </div>
 </template>
 
