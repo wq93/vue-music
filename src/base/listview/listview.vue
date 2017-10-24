@@ -33,7 +33,7 @@
     <div class="list-fixed" v-show="fixedTitle" ref="listFixed">
       <h2 class="fixed-title">{{fixedTitle}}</h2>
     </div>
-    <div class="loading-container" v-show="!data.length">
+    <div v-show="!data.length" class="loading-container">
       <loading></loading>
     </div>
   </scroll>
