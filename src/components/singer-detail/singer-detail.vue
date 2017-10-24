@@ -9,8 +9,15 @@
 <script type="text/ecmascript-6">
   import {mapGetters} from 'vuex'
   import {getSingerDetail} from '../../api/singer'
+  import {createSong} from '../../common/js/song'
   import {ERR_OK} from '../../api/config'
+  import $ from 'jquery'
   export default {
+    data() {
+      return {
+        songs: []
+      }
+    },
     computed: {
       ...mapGetters([
         'singer'
@@ -27,8 +34,15 @@
         }
         getSingerDetail(this.singer.id).then((res) => {
           if (res.code === ERR_OK) {
+            this.songs = this._normalizeSongs(res.data.list)
             console.log(res.data.list)
           }
+        })
+      },
+      _normalizeSongs(list) {
+        // let ret = []
+        $.each(list, (i, v) => {
+          // let {musicData} = v
         })
       }
     }
