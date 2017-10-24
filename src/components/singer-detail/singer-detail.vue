@@ -35,15 +35,18 @@
         getSingerDetail(this.singer.id).then((res) => {
           if (res.code === ERR_OK) {
             this.songs = this._normalizeSongs(res.data.list)
-            console.log(res.data.list)
           }
         })
       },
       _normalizeSongs(list) {
-        // let ret = []
+        let ret = []
         $.each(list, (i, v) => {
-          // let {musicData} = v
+          let {musicData} = v // es6解构赋值
+          if (musicData.songid && musicData.albumid) {
+            ret.push(createSong(musicData))
+          }
         })
+        return ret
       }
     }
   }
