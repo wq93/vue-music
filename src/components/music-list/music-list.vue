@@ -7,7 +7,14 @@
     <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="filter"></div>
     </div>
-    <scroll :data="songs" class="list" ref="songlist">
+    <div class="bg-layer" ref="layer"></div>
+    <scroll
+      @scroll="scroll"
+      :data="songs"
+      class="list"
+      :probe-type="probeType"
+      :listen-scroll="listenScroll"
+      ref="songlist">
       <div class="song-list-wrapper">
         <song-list :songs="songs"></song-list>
       </div>
@@ -17,6 +24,7 @@
 <script type="text/ecmascript-6">
   import SongList from '../../base/song-list/song-list.vue'
   import Scroll from '../../base/scroll/scroll.vue'
+  const RESERVED_HEIGHT = 40
   export default {
     props: {
       bgImage: {
@@ -32,13 +40,40 @@
         default: ''
       }
     },
+    data() {
+      return {
+        scrollY: 0
+      }
+    },
     computed: {
       bgStyle() {
         return `background-image:url(${this.bgImage})`
       }
     },
+    created() {
+      // 传给scroll组件的值
+      this.probeType = 3
+      this.listenScroll = true
+    },
     mounted() {
+      // layer元素的滚动值
+      this.imageHeight = this.$refs.bgImage.clientHeight
+      this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT
+
       this.$refs.songlist.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
+    },
+    methods: {
+      scroll(pos) {
+        this.scrollY = pos.y
+      }
+    },
+    watch: {
+      scrollY(newY) {
+        // 设置layer元素的最大滚动值
+        let translateY = Math.max(this.minTranslateY, newY)
+        this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
+        this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
+      }
     },
     components: {
       SongList,
