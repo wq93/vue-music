@@ -24,7 +24,14 @@
 <script type="text/ecmascript-6">
   import SongList from '../../base/song-list/song-list.vue'
   import Scroll from '../../base/scroll/scroll.vue'
+  import {prefixStyle} from '../../common/js/dom'
+
   const RESERVED_HEIGHT = 40
+
+  // css私有前缀常量
+  const transform = prefixStyle('transform')
+  const backdrop = prefixStyle('backdrop-filter')
+
   export default {
     props: {
       bgImage: {
@@ -75,8 +82,7 @@
         let scale = 1 // bgImage图片放大比例
         let blur = 0 // bgImage图片模糊度
         let bgImage = this.$refs.bgImage
-        this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
-        this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
+        this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
         const percent = Math.abs(newY / this.imageHeight)
         if (newY > 0) { // 向下滚动
           scale = 1 + percent
@@ -85,8 +91,7 @@
           blur = Math.min(20 * percent, 20)
         }
         // 添加图片模糊效果
-        this.$refs.filter.style['backdrop-filter'] = `bulr(${blur}px)`
-        this.$refs.filter.style['weblitBackdrop-filter'] = `bulr(${blur}px)`
+        this.$refs.filter.style[backdrop] = `bulr(${blur}px)`
         if (newY < this.minTranslateY) { // 向上滚动
           zIndex = 10
           bgImage.style.paddingTop = 0
@@ -96,8 +101,7 @@
           bgImage.style.height = 0
         }
         bgImage.style.zIndex = zIndex
-        bgImage.style['transform'] = `scale(${scale})`
-        bgImage.style['webkitTransform'] = `scale(${scale})`
+        bgImage.style[transform] = `scale(${scale})`
       }
     },
     components: {
