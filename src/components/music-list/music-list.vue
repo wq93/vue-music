@@ -71,8 +71,19 @@
       scrollY(newY) {
         // 设置layer元素的最大滚动值
         let translateY = Math.max(this.minTranslateY, newY)
+        let zIndex = 0
+        let bgImage = this.$refs.bgImage
         this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
         this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
+        if (newY < this.minTranslateY) {
+          zIndex = 10
+          bgImage.style.paddingTop = 0
+          bgImage.style.height = `${RESERVED_HEIGHT}px`
+        } else {
+          bgImage.style.paddingTop = '70%'
+          bgImage.style.height = 0
+        }
+        bgImage.style.zIndex = zIndex
       }
     },
     components: {
