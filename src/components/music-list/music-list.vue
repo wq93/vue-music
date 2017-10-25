@@ -72,10 +72,16 @@
         // 设置layer元素的最大滚动值
         let translateY = Math.max(this.minTranslateY, newY)
         let zIndex = 0
+        let scale = 1
         let bgImage = this.$refs.bgImage
         this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
         this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
-        if (newY < this.minTranslateY) {
+        const percent = Math.abs(newY / this.imageHeight)
+        if (newY > 0) { // 向下滚动
+          scale = 1 + percent
+          zIndex = 10
+        }
+        if (newY < this.minTranslateY) { // 向上滚动
           zIndex = 10
           bgImage.style.paddingTop = 0
           bgImage.style.height = `${RESERVED_HEIGHT}px`
@@ -84,6 +90,8 @@
           bgImage.style.height = 0
         }
         bgImage.style.zIndex = zIndex
+        bgImage.style['transform'] = `scale(${scale})`
+        bgImage.style['webkitTransform'] = `scale(${scale})`
       }
     },
     components: {
