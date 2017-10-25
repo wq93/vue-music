@@ -5,7 +5,7 @@
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
-      <div class="filter"></div>
+      <div class="filter" ref="filter"></div>
     </div>
     <div class="bg-layer" ref="layer"></div>
     <scroll
@@ -71,8 +71,9 @@
       scrollY(newY) {
         // 设置layer元素的最大滚动值
         let translateY = Math.max(this.minTranslateY, newY)
-        let zIndex = 0
-        let scale = 1
+        let zIndex = 0 // bgImage图片层级
+        let scale = 1 // bgImage图片放大比例
+        let blur = 0 // bgImage图片模糊度
         let bgImage = this.$refs.bgImage
         this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
         this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
@@ -80,7 +81,12 @@
         if (newY > 0) { // 向下滚动
           scale = 1 + percent
           zIndex = 10
+        } else {
+          blur = Math.min(20 * percent, 20)
         }
+        // 添加图片模糊效果
+        this.$refs.filter.style['backdrop-filter'] = `bulr(${blur}px)`
+        this.$refs.filter.style['weblitBackdrop-filter'] = `bulr(${blur}px)`
         if (newY < this.minTranslateY) { // 向上滚动
           zIndex = 10
           bgImage.style.paddingTop = 0
