@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="mini-player" v-show="!fullScreen" >
+    <div class="mini-player" v-show="!fullScreen" @click="open">
       <div class="icon">
         <img width="40" height="40" :src="currentSong.image">
       </div>
@@ -91,6 +91,9 @@
       back() {
         // 触发事件修改fullScreen状态
         this.setFullScreen(false)
+      },
+      open() {
+        this.setFullScreen(true)
       },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN'
