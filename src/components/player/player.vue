@@ -49,13 +49,13 @@
             <div class="icon i-left">
               <i class="icon-sequence"></i>
             </div>
-            <div class="icon i-left">
+            <div class="icon i-left" :class="disableClass">
               <i @click="prev" class="icon-prev"></i>
             </div>
             <div class="icon i-center">
               <i @click="togglePlaying" :class="playIcon"></i>
             </div>
-            <div class="icon i-right">
+            <div class="icon i-right" :class="disableClass">
               <i @click="next" class="icon-next"></i>
             </div>
             <div class="icon i-right">
@@ -112,6 +112,9 @@
       },
       playIconMini() { // 根据playing来计算播放键的状态
         return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+      },
+      disableClass() {
+        return this.songReady ? '' : 'disable'
       },
       ...mapGetters([
         'fullScreen',
@@ -211,7 +214,7 @@
         this.songReady = true
       },
       error() { // audio自带的资源准备出错事件
-        this.songReady = false
+        this.songReady = true
       },
       _getPosAndScale () {
         const targetWidth = 40 // 小唱片图标的宽度
