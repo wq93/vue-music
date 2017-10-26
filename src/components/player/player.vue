@@ -47,19 +47,19 @@
           </div>
           <div class="operators">
             <div class="icon i-left">
-              <i></i>
+              <i class="icon-sequence"></i>
             </div>
             <div class="icon i-left">
               <i class="icon-prev"></i>
             </div>
             <div class="icon i-center">
-              <i></i>
+              <i @click="togglePlaying" class="icon-play"></i>
             </div>
             <div class="icon i-right">
               <i class="icon-next"></i>
             </div>
             <div class="icon i-right">
-              <i class="icon"></i>
+              <i class="icon icon-not-favorite"></i>
             </div>
           </div>
         </div>
@@ -97,17 +97,19 @@
       ...mapGetters([
         'fullScreen',
         'playlist',
-        'currentSong'
+        'currentSong',
+        'playing'
       ])
     },
     methods: {
-      back() {
+      back() { // 关闭播放器
         // 触发事件修改fullScreen状态
         this.setFullScreen(false)
       },
-      open() {
+      open() { // 展开播放器
         this.setFullScreen(true)
       },
+      // 配置动画钩子
       enter (el, done) {
         const {x, y, scale} = this._getPosAndScale()
 
@@ -149,6 +151,11 @@
         this.$refs.cdWrapper.style.transition = ''
         this.$refs.cdWrapper.style[transform] = ''
       },
+      togglePlaying() {
+        // 设置playing的状态
+        console.log(!this.playing)
+        this.setPlayingState(!this.playing)
+      },
       _getPosAndScale () {
         const targetWidth = 40 // 小唱片图标的宽度
         const paddingLeft = 40  // 小唱片图标的左padding
@@ -167,13 +174,21 @@
         }
       },
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN'
+        setFullScreen: 'SET_FULL_SCREEN',
+        setPlayingState: 'SET_PLAYING_STATE'
       })
     },
     watch: {
       currentSong() {
         this.$nextTick(() => {
+          // 歌曲变化时播放歌曲
           this.$refs.audio.play()
+        })
+      },
+      playing(newPlaying) { // 监控playing的变化,达到歌曲的播放或者暂停
+        const audio = this.$refs.audio
+        this.$nextTick(() => {
+          newPlaying ? audio.play() : audio.pause()
         })
       }
     }
