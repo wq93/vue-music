@@ -53,7 +53,7 @@
               <i class="icon-prev"></i>
             </div>
             <div class="icon i-center">
-              <i @click="togglePlaying" class="icon-play"></i>
+              <i @click="togglePlaying" :class="playIcon"></i>
             </div>
             <div class="icon i-right">
               <i class="icon-next"></i>
@@ -75,6 +75,7 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
+          <i @click.stop="togglePlaying" :class="playIconMini"></i>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
@@ -94,6 +95,12 @@
   const transform = prefixStyle('transform')
   export default {
     computed: {
+      playIcon() { // 根据playing来计算播放键的状态
+        return this.playing ? 'icon-pause' : 'icon-play'
+      },
+      playIconMini() { // 根据playing来计算播放键的状态
+        return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+      },
       ...mapGetters([
         'fullScreen',
         'playlist',
