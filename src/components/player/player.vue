@@ -83,7 +83,10 @@
       </div>
     </transition>
     <!--歌曲播放-->
-    <audio ref="audio" :src="currentSong.url"></audio>
+    <audio ref="audio"
+           :src="currentSong.url"
+           @canplay="ready"
+           @error="error"></audio>
   </div>
 </template>
 
@@ -94,6 +97,12 @@
 
   const transform = prefixStyle('transform')
   export default {
+    data() {
+      return {
+        // 歌曲准备完才能切换,避免快速切换报错bug
+        songReady: false // 歌曲准备完毕标记
+      }
+    },
     computed: {
       cdClass () { // cd图片的旋转
         return this.playing ? 'play' : 'play pause'
@@ -168,6 +177,9 @@
       },
       prev() {
         // 上一首
+        if (!this.songReady) {
+          return
+        }
         let index = this.currentIndex - 1
         if (index === -1) {
           index = this.playlist.length - 1
@@ -177,8 +189,13 @@
         if (!this.playing) {
           this.togglePlaying()
         }
+        this.songReady = false
       },
       next() {
+        // 下一首
+        if (!this.songReady) {
+          return
+        }
         let index = this.currentIndex + 1
         if (index === this.playlist.length) {
           index = 0
@@ -188,6 +205,13 @@
         if (!this.playing) {
           this.togglePlaying()
         }
+        this.songReady = false
+      },
+      ready() { // audio自带的资源准备完毕事件
+        this.songReady = true
+      },
+      error() { // audio自带的资源准备出错事件
+        this.songReady = false
       },
       _getPosAndScale () {
         const targetWidth = 40 // 小唱片图标的宽度
