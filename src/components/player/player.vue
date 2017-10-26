@@ -39,11 +39,10 @@
             <span class="dot"></span>
           </div>
           <div class="progress-wrapper">
-            <span class="time time-l"></span>
+            <span class="time time-l">{{format(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-
             </div>
-            <span class="time time-r"></span>
+            <span class="time time-r">{{format(currentSong.duration)}}</span>
           </div>
           <div class="operators">
             <div class="icon i-left">
@@ -86,7 +85,8 @@
     <audio ref="audio"
            :src="currentSong.url"
            @canplay="ready"
-           @error="error"></audio>
+           @error="error"
+           @timeupdate="updateTime"></audio>
   </div>
 </template>
 
@@ -100,7 +100,8 @@
     data() {
       return {
         // 歌曲准备完才能切换,避免快速切换报错bug
-        songReady: false // 歌曲准备完毕标记
+        songReady: false, // 歌曲准备完毕标记
+        currentTime: 0 // 当前歌曲的播放时间
       }
     },
     computed: {
@@ -215,6 +216,23 @@
       },
       error() { // audio自带的资源准备出错事件
         this.songReady = true
+      },
+      updateTime(e) { // audio自带的获取当前播放时间事件
+        this.currentTime = e.target.currentTime
+      },
+      format(interval) {
+        interval = interval | 0 // 向下取整
+        const mintue = interval / 60 | 0
+        const second = this._pad(interval % 60)
+        return `${mintue}:${second}`
+      },
+      _pad(num, n = 2) { // 秒小于10时,补0
+        let len = num.toString().length
+        while (len < n) {
+          num = '0' + num
+          len++
+        }
+        return num
       },
       _getPosAndScale () {
         const targetWidth = 40 // 小唱片图标的宽度
