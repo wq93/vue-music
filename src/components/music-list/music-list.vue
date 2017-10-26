@@ -22,7 +22,7 @@
       :listen-scroll="listenScroll"
       ref="songlist">
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list @select="selectItem" :songs="songs"></song-list>
       </div>
       <div class="loading-container" v-show="!songs.length">
         <loading></loading>
@@ -35,7 +35,7 @@
   import Scroll from '../../base/scroll/scroll.vue'
   import Loading from '../../base/loading/loading.vue'
   import {prefixStyle} from '../../common/js/dom'
-
+  import {mapActions} from 'vuex'
   const RESERVED_HEIGHT = 40
 
   // css私有前缀常量
@@ -85,7 +85,16 @@
       },
       back() {
         this.$router.back()
-      }
+      },
+      selectItem(item, index) {
+        // 通过songlist子组件传递过来的点击事件
+        // 获取当前点击的歌曲名称 索引
+        this.selectPlay({
+          list: this.songs, // 整个列表
+          index
+        })
+      },
+      ...mapActions([selectPlay])
     },
     watch: {
       scrollY(newY) {
