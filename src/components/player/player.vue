@@ -4,7 +4,7 @@
                 @enter="enter"
                 @after-enter="afterEnter"
                 @leave="leave"
-                @after-leave="leaveEnter">
+                @after-leave="afterLeave">
       <div class="normal-player" v-show="fullScreen">
         <div class="background">
           <img width="100%" height="100%" :src="currentSong.image">
@@ -87,6 +87,9 @@
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
   import animations from 'create-keyframe-animation'
+  import {prefixStyle} from '../../common/js/dom'
+
+  const transform = prefixStyle('transform')
   export default {
     computed: {
       ...mapGetters([
@@ -135,10 +138,14 @@
         this.$refs.cdWrapper.style.animation = ''
       },
       leave (el, done) {
-
+        this.$refs.cdWrapper.style.transition = 'all 0.4s'
+        const {x, y, scale} = this._getPosAndScale()
+        this.$refs.cdWrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`
+        this.$refs.cdWrapper.addEventListener('transitionend', done)
       },
-      leaveEnter () {
-
+      afterLeave () {
+        this.$refs.cdWrapper.style.transition = ''
+        this.$refs.cdWrapper.style[transform] = ''
       },
       _getPosAndScale () {
         const targetWidth = 40 // 小唱片图标的宽度
