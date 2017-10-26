@@ -1,6 +1,10 @@
 <template>
   <div class="player" v-show="playlist.length>0">
-    <transition name="normal">
+    <transition name="normal"
+                @enter="enter"
+                @after-enter="afterEnter"
+                @leave="leave"
+                @after-leave="leaveEnter">
       <div class="normal-player" v-show="fullScreen">
         <div class="background">
           <img width="100%" height="100%" :src="currentSong.image">
@@ -14,7 +18,7 @@
         </div>
         <div class="middle">
           <div class="middle-l">
-            <div class="cd-wrapper">
+            <div class="cd-wrapper" ref="cdWrapper">
               <div class="cd">
                 <img class="image" :src="currentSong.image">
               </div>
@@ -82,7 +86,7 @@
 
 <script type="text/ecmascript-6">
   import {mapGetters, mapMutations} from 'vuex'
-
+  import animations from 'create-keyframe-animation'
   export default {
     computed: {
       ...mapGetters([
@@ -98,6 +102,60 @@
       },
       open() {
         this.setFullScreen(true)
+      },
+      enter (el, done) {
+        const {x, y, scale} = this._getPosAndScale()
+
+        let animation = {
+          0: {
+            transform: `translate3d(${x}px,${y}px,0) scale(${scale})`
+          },
+          60: {
+            transform: `translate3d(0,0,0) scale(1.1)`
+          },
+          100: {
+            transform: `translate3d(0,0,0) scale(1)`
+          }
+        }
+
+        // 配置animations
+        animations.registerAnimation({
+          name: 'move',
+          animation,
+          presets: {
+            duration: 400,
+            easing: 'linear'
+          }
+        })
+
+        animations.runAnimation(this.$refs.cdWrapper, 'move', done) // done表示跳到下一个动画状态
+      },
+      afterEnter () {
+        animations.unregisterAnimation('move')
+        this.$refs.cdWrapper.style.animation = ''
+      },
+      leave (el, done) {
+
+      },
+      leaveEnter () {
+
+      },
+      _getPosAndScale () {
+        const targetWidth = 40 // 小唱片图标的宽度
+        const paddingLeft = 40  // 小唱片图标的左padding
+        const paddingBottom = 30 // 小唱片图标的下padding
+        const paddingTop = 80 // 大唱片图标到屏幕顶部的高度
+        const width = window.innerWidth * 0.8 // 大唱片图标宽度
+        const scale = targetWidth / width // 缩放比列
+        // 偏移距离
+        const x = -(window.innerWidth / 2 - paddingLeft)
+        const y = window.innerHeight - paddingTop - width / 2 - paddingBottom
+
+        return {
+          x,
+          y,
+          scale
+        }
       },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN'
