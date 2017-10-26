@@ -5,7 +5,7 @@
         <img width="100%" height="100%" :src="currentSong.image">
       </div>
       <div class="top">
-        <div class="back">
+        <div class="back" @click="back">
           <i class="icon-back"></i>
         </div>
         <h1 class="title" v-html="currentSong.name"></h1>
@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="mini-player" v-show="!fullScreen">
+    <div class="mini-player" v-show="!fullScreen" >
       <div class="icon">
         <img width="40" height="40" :src="currentSong.image">
       </div>
@@ -77,7 +77,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex'
 
   export default {
     computed: {
@@ -86,6 +86,15 @@
         'playlist',
         'currentSong'
       ])
+    },
+    methods: {
+      back() {
+        // 触发事件修改fullScreen状态
+        this.setFullScreen(false)
+      },
+      ...mapMutations({
+        setFullScreen: 'SET_FULL_SCREEN'
+      })
     }
   }
 </script>
