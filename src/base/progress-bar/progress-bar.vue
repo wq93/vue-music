@@ -1,9 +1,9 @@
 <template>
-  <div class="progress-bar">
+  <div class="progress-bar" ref="progressBar">
     <div class="bar-inner">
-      <div class="progress"></div>
+      <div class="progress" ref="progress"></div>
       <div class="progress-btn-wrapper">
-        <div class="progress-btn"></div>
+        <div class="progress-btn" ref="progressBtn"></div>
       </div>
     </div>
   </div>
@@ -12,7 +12,25 @@
 <script type="text/ecmascript-6">
   import {prefixStyle} from 'common/js/dom'
   const transform = prefixStyle('transform')
-  export default {}
+  const progressBtnWidth = 16 // 进度条的左边距
+  export default {
+    props: {
+      percent: { // 播放进度的百分比
+        type: Number,
+        default: 0
+      }
+    },
+    watch: {
+      percent(newPercent) {
+        if (newPercent >= 0) {
+          const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
+          const offsetWidth = newPercent * barWidth
+          this.$refs.progress.style.width = `${offsetWidth}px`
+          this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+        }
+      }
+    }
+  }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
