@@ -90,11 +90,13 @@
         // 通过songlist子组件传递过来的点击事件
         // 获取当前点击的歌曲名称 索引
         this.selectPlay({
-          list: this.songs, // 整个列表
+          list: this.songs,
           index
         })
       },
-      ...mapActions([selectPlay])
+      ...mapActions([
+        'selectPlay'
+      ])
     },
     watch: {
       scrollY(newY) {
