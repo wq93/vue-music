@@ -50,13 +50,13 @@
               <i class="icon-sequence"></i>
             </div>
             <div class="icon i-left">
-              <i class="icon-prev"></i>
+              <i @click="prev" class="icon-prev"></i>
             </div>
             <div class="icon i-center">
               <i @click="togglePlaying" :class="playIcon"></i>
             </div>
             <div class="icon i-right">
-              <i class="icon-next"></i>
+              <i @click="next" class="icon-next"></i>
             </div>
             <div class="icon i-right">
               <i class="icon icon-not-favorite"></i>
@@ -108,7 +108,8 @@
         'fullScreen',
         'playlist',
         'currentSong',
-        'playing'
+        'playing',
+        'currentIndex'
       ])
     },
     methods: {
@@ -163,8 +164,30 @@
       },
       togglePlaying() {
         // 设置playing的状态
-        console.log(!this.playing)
         this.setPlayingState(!this.playing)
+      },
+      prev() {
+        // 上一首
+        let index = this.currentIndex - 1
+        if (index === -1) {
+          index = this.playlist.length - 1
+        }
+        this.setCurrentIndex(index)
+        // 修改playing的状态,确保CD图正确旋转
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+      },
+      next() {
+        let index = this.currentIndex + 1
+        if (index === this.playlist.length) {
+          index = 0
+        }
+        this.setCurrentIndex(index)
+        // 修改playing的状态
+        if (!this.playing) {
+          this.togglePlaying()
+        }
       },
       _getPosAndScale () {
         const targetWidth = 40 // 小唱片图标的宽度
@@ -185,7 +208,8 @@
       },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
-        setPlayingState: 'SET_PLAYING_STATE'
+        setPlayingState: 'SET_PLAYING_STATE',
+        setCurrentIndex: 'SET_CURRENT_INDEX'
       })
     },
     watch: {
