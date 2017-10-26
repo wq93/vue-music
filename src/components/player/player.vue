@@ -19,7 +19,7 @@
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdWrapper">
-              <div class="cd">
+              <div class="cd" :class="cdClass">
                 <img class="image" :src="currentSong.image">
               </div>
             </div>
@@ -68,7 +68,7 @@
     <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
-          <img width="40" height="40" :src="currentSong.image">
+          <img :class="cdClass" width="40" height="40" :src="currentSong.image">
         </div>
         <div class="text">
           <h2 class="name" v-html="currentSong.name"></h2>
@@ -95,6 +95,9 @@
   const transform = prefixStyle('transform')
   export default {
     computed: {
+      cdClass () { // cd图片的旋转
+        return this.playing ? 'play' : 'play pause'
+      },
       playIcon() { // 根据playing来计算播放键的状态
         return this.playing ? 'icon-pause' : 'icon-play'
       },
