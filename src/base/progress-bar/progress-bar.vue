@@ -1,5 +1,5 @@
 <template>
-  <div class="progress-bar" ref="progressBar">
+  <div class="progress-bar" ref="progressBar" @click.prevent="progressClick">
     <div class="bar-inner">
       <div class="progress" ref="progress"></div>
       <div class="progress-btn-wrapper" ref="progressBtn"
@@ -42,6 +42,11 @@
       },
       progressTouchEnd () {
         this.touch.initiated = false
+        // 派发一个进度条百分比改变的事件
+        this._triggerPerent()
+      },
+      progressClick(e) {
+        this._offset(e.offsetX)
         // 派发一个进度条百分比改变的事件
         this._triggerPerent()
       },

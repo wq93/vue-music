@@ -119,6 +119,7 @@
         return this.songReady ? '' : 'disable'
       },
       percent() {
+        // 根据当前播放时间/歌曲总时间计算百分比
         return this.currentTime / this.currentSong.duration
       },
       ...mapGetters([
@@ -231,6 +232,10 @@
       },
       onPercentChange(percent) {
         this.$refs.audio.currentTime = this.currentSong.duration * percent
+        // 拖动结束自动播放
+        if (!this.playing) {
+          this.togglePlaying()
+        }
       },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
