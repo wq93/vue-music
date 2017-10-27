@@ -110,7 +110,6 @@
         songReady: false, // 歌曲准备完毕标记
         currentTime: 0, // 当前歌曲的播放时间
         radius: 32, // 圆形进度条的宽度
-        num: 0
       }
     },
     computed: {
@@ -141,11 +140,7 @@
         'playing', // 播放/暂停
         'currentIndex', // 当前播放歌曲索引
         'mode' // 播放模式
-      ]),
-      chengeNum() {
-        console.log('asdasda')
-        return this.num
-      }
+      ])
     },
     methods: {
       back() { // 关闭播放器
@@ -276,7 +271,6 @@
         // 偏移距离
         const x = -(window.innerWidth / 2 - paddingLeft)
         const y = window.innerHeight - paddingTop - width / 2 - paddingBottom
-
         return {
           x,
           y,
