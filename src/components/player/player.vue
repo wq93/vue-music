@@ -109,7 +109,7 @@
         // 歌曲准备完才能切换,避免快速切换报错bug
         songReady: false, // 歌曲准备完毕标记
         currentTime: 0, // 当前歌曲的播放时间
-        radius: 32, // 圆形进度条的宽度
+        radius: 32 // 圆形进度条的宽度
       }
     },
     computed: {
