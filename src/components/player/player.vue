@@ -46,8 +46,8 @@
             <span class="time time-r">{{format(currentSong.duration)}}</span>
           </div>
           <div class="operators">
-            <div class="icon i-left">
-              <i class="icon-sequence"></i>
+            <div class="icon i-left" @click="changeMode">
+              <i :class="iconMode"></i>
             </div>
             <div class="icon i-left" :class="disableClass">
               <i @click="prev" class="icon-prev"></i>
@@ -99,6 +99,7 @@
   import {mapGetters, mapMutations} from 'vuex'
   import animations from 'create-keyframe-animation'
   import {prefixStyle} from '../../common/js/dom'
+  import {playMode} from '../../common/js/config'
   import ProgressBar from '../../base/progress-bar/progress-bar.vue'
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue'
   const transform = prefixStyle('transform')
@@ -108,7 +109,8 @@
         // 歌曲准备完才能切换,避免快速切换报错bug
         songReady: false, // 歌曲准备完毕标记
         currentTime: 0, // 当前歌曲的播放时间
-        radius: 32 // 圆形进度条的宽度
+        radius: 32, // 圆形进度条的宽度
+        num: 0
       }
     },
     computed: {
@@ -124,17 +126,26 @@
       disableClass() {
         return this.songReady ? '' : 'disable'
       },
+      iconMode () {
+        // 播放状态
+        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+      },
       percent() {
         // 根据当前播放时间/歌曲总时间计算百分比
         return this.currentTime / this.currentSong.duration
       },
       ...mapGetters([
-        'fullScreen',
-        'playlist',
-        'currentSong',
-        'playing',
-        'currentIndex'
-      ])
+        'fullScreen', // 是否全屏
+        'playlist', // 播放列表
+        'currentSong', // 当前播放歌曲
+        'playing', // 播放/暂停
+        'currentIndex', // 当前播放歌曲索引
+        'mode' // 播放模式
+      ]),
+      chengeNum() {
+        console.log('asdasda')
+        return this.num
+      }
     },
     methods: {
       back() { // 关闭播放器
@@ -243,6 +254,10 @@
           this.togglePlaying()
         }
       },
+      changeMode() {
+        const mode = (this.mode + 1) % 3
+        this.setPlaymode(mode)
+      },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
         while (len < n) {
@@ -271,7 +286,8 @@
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
         setPlayingState: 'SET_PLAYING_STATE',
-        setCurrentIndex: 'SET_CURRENT_INDEX'
+        setCurrentIndex: 'SET_CURRENT_INDEX',
+        setPlaymode: 'SET_PLAY_MODE'
       })
     },
     watch: {
