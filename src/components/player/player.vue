@@ -75,7 +75,11 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
-          <i @click.stop="togglePlaying" :class="playIconMini"></i>
+          <progress-circle :radius="radius" :percent="percent">
+            <!--作为ProgressCircle组件的slot插槽-->
+            <i @click.stop="togglePlaying" :class="playIconMini" class="icon-mini"></i>
+            <!--作为ProgressCircle组件的slot插槽-->
+          </progress-circle>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
@@ -96,13 +100,15 @@
   import animations from 'create-keyframe-animation'
   import {prefixStyle} from '../../common/js/dom'
   import ProgressBar from '../../base/progress-bar/progress-bar.vue'
+  import ProgressCircle from '../../base/progress-circle/progress-circle.vue'
   const transform = prefixStyle('transform')
   export default {
     data() {
       return {
         // 歌曲准备完才能切换,避免快速切换报错bug
         songReady: false, // 歌曲准备完毕标记
-        currentTime: 0 // 当前歌曲的播放时间
+        currentTime: 0, // 当前歌曲的播放时间
+        radius: 32 // 圆形进度条的宽度
       }
     },
     computed: {
@@ -283,7 +289,8 @@
       }
     },
     components: {
-      ProgressBar
+      ProgressBar,
+      ProgressCircle
     }
   }
 </script>
