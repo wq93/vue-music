@@ -86,9 +86,6 @@
       back() {
         this.$router.back()
       },
-      random() {
-
-      },
       selectItem(item, index) {
         // 通过songlist子组件传递过来的点击事件
         // 获取当前点击的歌曲名称 索引
@@ -98,11 +95,13 @@
         })
       },
       random() {
-
+        this.randomPlay({
+          list: this.songs
+        })
       },
       ...mapActions([
         'selectPlay',
-        ''
+        'randomPlay'
       ])
     },
     watch: {
