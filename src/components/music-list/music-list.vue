@@ -95,6 +95,7 @@
         })
       },
       random() {
+        // 通过actions封装的方法设置数据状态
         this.randomPlay({
           list: this.songs
         })
