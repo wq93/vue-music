@@ -100,6 +100,7 @@
   import animations from 'create-keyframe-animation'
   import {prefixStyle} from '../../common/js/dom'
   import {playMode} from '../../common/js/config'
+  import {shuffle} from '../../common/js/util'
   import ProgressBar from '../../base/progress-bar/progress-bar.vue'
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue'
   const transform = prefixStyle('transform')
@@ -139,7 +140,8 @@
         'currentSong', // 当前播放歌曲
         'playing', // 播放/暂停
         'currentIndex', // 当前播放歌曲索引
-        'mode' // 播放模式
+        'mode', // 播放模式
+        'sequenceList' // 初始歌曲列表
       ])
     },
     methods: {
@@ -252,6 +254,25 @@
       changeMode() {
         const mode = (this.mode + 1) % 3
         this.setPlaymode(mode)
+        // 切换播放状态,更换歌曲列表
+        let list = null
+        if (mode === playMode.random) {
+          list = shuffle(this.sequenceList)
+        } else {
+          list = this.sequenceList
+        }
+        // 记录当前歌曲,避免切换播放状态找不到这首歌
+        this.resetCurrentIndex(list)
+        // 更换store中的playList
+        this.setPlayList(list)
+      },
+      resetCurrentIndex(list) {
+        let index = list.findIndex((item) => {
+          // 判断歌曲的唯一id
+          return item.id === this.currentSong.id
+        })
+        // 改变store中的index
+        this.setCurrentIndex(index)
       },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
@@ -281,11 +302,18 @@
         setFullScreen: 'SET_FULL_SCREEN',
         setPlayingState: 'SET_PLAYING_STATE',
         setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlaymode: 'SET_PLAY_MODE'
+        setPlaymode: 'SET_PLAY_MODE',
+        setPlayList: 'SET_PLAYLIST'
       })
     },
     watch: {
-      currentSong() {
+      // bug1 : 当我们切换了播放模式时,虽然我们保存了当前的歌曲(记录id,再通过id去新数组中找)
+      // 但是watch还是认为我们发生了改变,所以切换播放状态的时候会出现处于暂停时 自动播放bug
+      currentSong(newSong, oldSong) {
+        // 判断歌曲的id没变,说明是同一首歌
+        if (newSong.id === oldSong.id) {
+          return
+        }
         this.$nextTick(() => {
           // 歌曲变化时播放歌曲
           this.$refs.audio.play()
