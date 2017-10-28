@@ -91,7 +91,9 @@
            :src="currentSong.url"
            @canplay="ready"
            @error="error"
-           @timeupdate="updateTime"></audio>
+           @timeupdate="updateTime"
+           @ended="end"
+    ></audio>
   </div>
 </template>
 
@@ -213,6 +215,20 @@
         }
         this.songReady = false
       },
+      end () {
+        // 根据播放模式判断是否跳到下一首
+        if (this.mode === playMode.loop) {
+          console.log('loop')
+          this.loop()
+        } else {
+          this.next()
+        }
+      },
+      loop() {
+        // 将当前的播放时间置为0
+        this.$refs.audio.currentTime = 0
+        this.$refs.audio.play()
+      },
       next() {
         // 下一首
         if (!this.songReady) {
@@ -227,6 +243,7 @@
         if (!this.playing) {
           this.togglePlaying()
         }
+        // 修改标记
         this.songReady = false
       },
       ready() { // audio自带的资源准备完毕事件

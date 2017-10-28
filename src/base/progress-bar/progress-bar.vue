@@ -46,7 +46,11 @@
         this._triggerPerent()
       },
       progressClick(e) {
-        this._offset(e.offsetX)
+        const rect = this.$refs.progressBar.getBoundingClientRect()
+        const offsetWidth = e.pageX - rect.left
+        this._offset(offsetWidth)
+        // 这里当我们点击progressBtn 的时候, e.offsetX获取不对
+        // this._offset(e.offsetX)
         // 派发一个进度条百分比改变的事件
         this._triggerPerent()
       },
