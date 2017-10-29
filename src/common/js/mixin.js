@@ -19,6 +19,7 @@ export const playlistMixin = {
     }
   },
   methods: {
+    // 导入的组件内没有定义handlePlaylist方法报错
     handlePlaylist() {
       throw new Error('component must implement handlePlaylist method')
     }
