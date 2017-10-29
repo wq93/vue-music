@@ -16,7 +16,10 @@
           <h1 class="title" v-html="currentSong.name"></h1>
           <h2 class="subtitle" v-html="currentSong.singer"></h2>
         </div>
-        <div class="middle">
+        <div class="middle"
+             @touchstart.prevent="middleTouchStart"
+             @touchmove="middleTouchMove"
+             @touchend="middleTouchEnd">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdWrapper">
               <div class="cd" :class="cdClass">
@@ -37,8 +40,8 @@
         </div>
         <div class="bottom">
           <div class="dot-wrapper">
-            <span class="dot"></span>
-            <span class="dot"></span>
+            <span class="dot" :class="{'active':currentShow==='cd'}"></span>
+            <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
           </div>
           <div class="progress-wrapper">
             <span class="time time-l">{{format(currentTime)}}</span>
@@ -118,7 +121,8 @@
         currentTime: 0, // 当前歌曲的播放时间
         radius: 32, // 圆形进度条的宽度
         currentLyric: null, // 当前歌曲歌词
-        currentLineNum: 0 // 当前歌词行数
+        currentLineNum: 0, // 当前歌词行数
+        currentShow: 'cd' // 当前处于歌词页/CD页
       }
     },
     computed: {
@@ -151,6 +155,9 @@
         'mode', // 播放模式
         'sequenceList' // 初始歌曲列表
       ])
+    },
+    created() {
+      this.touch = {}
     },
     methods: {
       back() { // 关闭播放器
@@ -314,6 +321,29 @@
         } else {
           this.$refs.lyricList.scrollTo(0, 0, 1000)
         }
+      },
+      middleTouchStart(e) {
+        this.touch.initiated = true
+        const touch = e.touches[0]
+        this.touch.startX = touch.pageX
+        this.touch.startY = touch.pageY
+      },
+      middleTouchMove(e) {
+        console.log(this.touch.initiated)
+        if (!this.touch.initiated) {
+          return
+        }
+        const touch = e.touches[0]
+        const deltaX = touch.pageX - this.touch.startX
+        const deltaY = touch.pageY - this.touch.startY
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+          return
+        }
+        const left = this.currentShow === 'cd' ? 0 : -window.innerWidth
+        const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
+        this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+      },
+      middleTouchEnd() {
       },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
