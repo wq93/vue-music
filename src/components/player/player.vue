@@ -450,11 +450,12 @@
           // 原因: 每次切换歌曲,插件内部都会调用定时器,所以我们需要手动清理
           this.currentLyric.stop()
         }
-        this.$nextTick(() => {
+        // 避免在移动端后台进程切到前台,js没有执行完毕就开始播放歌曲的bug
+        setTimeout(() => {
           // 歌曲变化时播放歌曲
           this.$refs.audio.play()
           this.getLyric()
-        })
+        }, 1000)
       },
       playing(newPlaying) { // 监控playing的变化,达到歌曲的播放或者暂停
         const audio = this.$refs.audio
