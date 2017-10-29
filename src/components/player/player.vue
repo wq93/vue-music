@@ -283,10 +283,16 @@
         return `${mintue}:${second}`
       },
       onPercentChange(percent) {
-        this.$refs.audio.currentTime = this.currentSong.duration * percent
+        // 当前播放时间
+        const currentTime = this.currentSong.duration * percent
+        this.$refs.audio.currentTime = currentTime
         // 拖动结束自动播放
         if (!this.playing) {
           this.togglePlaying()
+        }
+        // 歌词插件封装的方法(改变歌曲的播放进度,同步歌词)
+        if (this.currentLyric) {
+          this.currentLyric.seek(currentTime * 1000)
         }
       },
       changeMode() {
