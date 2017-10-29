@@ -78,7 +78,6 @@
       // layer元素的滚动值
       this.imageHeight = this.$refs.bgImage.clientHeight
       this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT
-
       this.$refs.songlist.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
     },
     methods: {
@@ -101,6 +100,11 @@
         this.randomPlay({
           list: this.songs
         })
+      },
+      handlePlaylist(playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.songlist.$el.style.bottom = bottom
+        this.$refs.songlist.refresh()
       },
       ...mapActions([
         'selectPlay',
