@@ -105,6 +105,7 @@
   import {shuffle} from '../../common/js/util'
   import ProgressBar from '../../base/progress-bar/progress-bar.vue'
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue'
+  import Lyric from 'lyric-parser'
   const transform = prefixStyle('transform')
   export default {
     data() {
@@ -290,6 +291,12 @@
         // 改变store中的index
         this.setCurrentIndex(index)
       },
+      getLyric() {
+        this.currentSong.getLyric().then((lyric) => {
+          // 利用lyric-parser插件格式化歌词
+          this.currentLyric = new Lyric(lyric)
+        })
+      },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
         while (len < n) {
@@ -333,7 +340,7 @@
         this.$nextTick(() => {
           // 歌曲变化时播放歌曲
           this.$refs.audio.play()
-          this.currentSong.getLyric()
+          this.getLyric()
         })
       },
       playing(newPlaying) { // 监控playing的变化,达到歌曲的播放或者暂停
