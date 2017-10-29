@@ -26,6 +26,9 @@
                 <img class="image" :src="currentSong.image">
               </div>
             </div>
+            <div class="playing-lyric-wrapper">
+              <div class="playing-lyric">{{playingLyric}}</div>
+            </div>
           </div>
           <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
             <div class="lyric-wrapper">
@@ -123,7 +126,8 @@
         radius: 32, // 圆形进度条的宽度
         currentLyric: null, // 当前歌曲歌词
         currentLineNum: 0, // 当前歌词行数
-        currentShow: 'cd' // 当前处于歌词页/CD页
+        currentShow: 'cd', // 当前处于歌词页/CD页
+        playingLyric: '' // 当前播放的歌词
       }
     },
     computed: {
@@ -336,6 +340,7 @@
         } else {
           this.$refs.lyricList.scrollTo(0, 0, 1000)
         }
+        this.playingLyric = txt
       },
       middleTouchStart(e) {
         this.touch.initiated = true
