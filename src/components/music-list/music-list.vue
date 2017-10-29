@@ -36,6 +36,7 @@
   import Loading from '../../base/loading/loading.vue'
   import {prefixStyle} from '../../common/js/dom'
   import {mapActions} from 'vuex'
+  import {playlistMixin} from '../../common/js/mixin'
   const RESERVED_HEIGHT = 40
 
   // css私有前缀常量
@@ -43,6 +44,7 @@
   const backdrop = prefixStyle('backdrop-filter')
 
   export default {
+    mixins: [playlistMixin],
     props: {
       bgImage: {
         type: String,
