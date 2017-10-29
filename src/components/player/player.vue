@@ -212,6 +212,10 @@
       togglePlaying() {
         // 设置playing的状态
         this.setPlayingState(!this.playing)
+        // 暂停歌曲,暂停歌词
+        if (this.currentLyric) {
+          this.currentLyric.togglePlay()
+        }
       },
       prev() {
         // 上一首
@@ -241,6 +245,10 @@
         // 将当前的播放时间置为0
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
+        // 循环播放时,歌曲结束歌词调回开头
+        if (this.currentLyric) {
+          this.currentLyric.seek()
+        }
       },
       next() {
         // 下一首
