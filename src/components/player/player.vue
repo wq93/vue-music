@@ -417,6 +417,11 @@
         if (newSong.id === oldSong.id) {
           return
         }
+        if (this.currentLyric) {
+          // bug : 快速切换歌曲时,歌词出现来回跳动
+          // 原因: 每次切换歌曲,插件内部都会调用定时器,所以我们需要手动清理
+          this.currentLyric.stop()
+        }
         this.$nextTick(() => {
           // 歌曲变化时播放歌曲
           this.$refs.audio.play()
