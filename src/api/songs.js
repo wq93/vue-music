@@ -1,9 +1,9 @@
-// 抓取歌词数据
 import {commonParams} from './config'
 import axios from 'axios'
 
-export function getLyric() {
+export function getLyric(mid) {
   const url = '/api/lyric'
+
   const data = Object.assign({}, commonParams, {
     songmid: mid,
     platform: 'yqq',
@@ -12,7 +12,9 @@ export function getLyric() {
     categoryId: 10000000,
     pcachetime: +new Date(),
     format: 'json'
+
   })
+
   return axios.get(url, {
     params: data
   }).then((res) => {

@@ -52,6 +52,7 @@ apiRoutes.get('/lyric', function (req, res) {
   }).then((response) => {
     var ret = response.data
     if (typeof ret === 'string') {
+      // 匹配jsonp字符串中的json体
       var reg = /^\w+\(({[^()]+})\)$/
       var matches = ret.match(reg)
       if (matches) {

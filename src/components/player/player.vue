@@ -218,7 +218,6 @@
       end () {
         // 根据播放模式判断是否跳到下一首
         if (this.mode === playMode.loop) {
-          console.log('loop')
           this.loop()
         } else {
           this.next()
@@ -334,6 +333,7 @@
         this.$nextTick(() => {
           // 歌曲变化时播放歌曲
           this.$refs.audio.play()
+          this.currentSong.getLyric()
         })
       },
       playing(newPlaying) { // 监控playing的变化,达到歌曲的播放或者暂停

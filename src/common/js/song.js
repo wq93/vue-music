@@ -1,4 +1,7 @@
-import $ from 'jquery'
+import {getLyric} from '../../api/songs'
+import {ERR_OK} from '../../api/config'
+import {Base64} from 'js-base64'
+
 export default class Song {
   constructor({id, mid, singer, name, album, duration, image, url}) {
     this.id = id
@@ -10,13 +13,28 @@ export default class Song {
     this.image = image
     this.url = url
   }
+  getLyric() {
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+
+    return new Promise((resolve, reject) => {
+      getLyric(this.mid).then((res) => {
+        if (res.retcode === ERR_OK) {
+          this.lyric = Base64.decode(res.lyric)
+          resolve(this.lyric)
+        } else {
+          reject('no lyric')
+        }
+      })
+    })
+  }
 }
 
-// 调用构造函数Song创建我们需要的歌曲数据
 export function createSong(musicData) {
   return new Song({
     id: musicData.songid,
-    mid: musicData.mid,
+    mid: musicData.songmid,
     singer: filterSinger(musicData.singer),
     name: musicData.songname,
     album: musicData.albumname,
@@ -31,8 +49,8 @@ function filterSinger(singer) {
   if (!singer) {
     return ''
   }
-  $.each(singer, (i, v) => {
-    ret.push(v.name)
+  singer.forEach((s) => {
+    ret.push(s.name)
   })
   return ret.join('/')
 }

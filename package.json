@@ -21,7 +21,8 @@
     "axios": "^0.16.1",
     "vue-lazyload": "^1.0.3",
     "jquery": "^2.2.3",
-    "create-keyframe-animation": "^0.1.0"
+    "create-keyframe-animation": "^0.1.0",
+    "js-base64": "^2.1.9"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
