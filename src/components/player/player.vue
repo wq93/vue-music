@@ -226,14 +226,18 @@
         if (!this.songReady) {
           return
         }
-        let index = this.currentIndex - 1
-        if (index === -1) {
-          index = this.playlist.length - 1
-        }
-        this.setCurrentIndex(index)
-        // 修改playing的状态,确保CD图正确旋转
-        if (!this.playing) {
-          this.togglePlaying()
+        if (this.playlist.length === 1) {
+          this.loop()
+        } else {
+          let index = this.currentIndex - 1
+          if (index === -1) {
+            index = this.playlist.length - 1
+          }
+          this.setCurrentIndex(index)
+          // 修改playing的状态,确保CD图正确旋转
+          if (!this.playing) {
+            this.togglePlaying()
+          }
         }
         this.songReady = false
       },
@@ -259,14 +263,19 @@
         if (!this.songReady) {
           return
         }
-        let index = this.currentIndex + 1
-        if (index === this.playlist.length) {
-          index = 0
-        }
-        this.setCurrentIndex(index)
-        // 修改playing的状态
-        if (!this.playing) {
-          this.togglePlaying()
+        // 如果当前playlist就一首歌,length=1
+        if (this.playlist.length === 1) {
+          this.loop() // 循环播放
+        } else {
+          let index = this.currentIndex + 1
+          if (index === this.playlist.length) {
+            index = 0
+          }
+          this.setCurrentIndex(index)
+          // 修改playing的状态
+          if (!this.playing) {
+            this.togglePlaying()
+          }
         }
         // 修改标记
         this.songReady = false
