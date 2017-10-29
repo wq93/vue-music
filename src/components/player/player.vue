@@ -20,7 +20,7 @@
              @touchstart.prevent="middleTouchStart"
              @touchmove="middleTouchMove"
              @touchend="middleTouchEnd">
-          <div class="middle-l">
+          <div class="middle-l" ref="middleL">
             <div class="cd-wrapper" ref="cdWrapper">
               <div class="cd" :class="cdClass">
                 <img class="image" :src="currentSong.image">
@@ -113,6 +113,7 @@
   import Scroll from '../../base/scroll/scroll.vue'
   import Lyric from 'lyric-parser'
   const transform = prefixStyle('transform')
+  const transitionDuration = prefixStyle('transitionDuration')
   export default {
     data() {
       return {
@@ -329,21 +330,52 @@
         this.touch.startY = touch.pageY
       },
       middleTouchMove(e) {
-        console.log(this.touch.initiated)
         if (!this.touch.initiated) {
           return
         }
         const touch = e.touches[0]
-        const deltaX = touch.pageX - this.touch.startX
+        const deltaX = touch.pageX - this.touch.startX // 滑动的偏移量
         const deltaY = touch.pageY - this.touch.startY
-        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+        if (Math.abs(deltaY) > Math.abs(deltaX)) { // 如果是滑动歌词时, 结束函数
           return
         }
-        const left = this.currentShow === 'cd' ? 0 : -window.innerWidth
+        const left = this.currentShow === 'cd' ? 0 : -window.innerWidth // 左边距
         const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
+        this.touch.percent = Math.abs(offsetWidth / window.innerWidth) // 滑动的距离/屏幕的宽度
+        console.log(this.touch.percent)
+        this.$refs.lyricList.$el.style[transitionDuration] = 0
+        this.$refs.middleL.style.opacity = 1 - this.touch.percent // 区块的透明度
+        this.$refs.middleL.style[transitionDuration] = 0
         this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
       },
       middleTouchEnd() {
+        let offsetWidth
+        let opacity
+        if (this.currentShow === 'cd') {
+          if (this.touch.percent > 0.1) {
+            offsetWidth = -window.innerWidth
+            opacity = 0
+            this.currentShow = 'lyric'
+          } else {
+            offsetWidth = 0
+            opacity = 1
+          }
+        } else {
+          if (this.touch.percent < 0.9) {
+            offsetWidth = 0
+            this.currentShow = 'cd'
+            opacity = 1
+          } else {
+            offsetWidth = -window.innerWidth
+            opacity = 0
+          }
+        }
+        const time = 300
+        this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+        this.$refs.lyricList.$el.style[transitionDuration] = `${time}ms`
+        this.$refs.middleL.style.opacity = opacity
+        this.$refs.middleL.style[transitionDuration] = `${time}ms`
+        this.touch.initiated = false
       },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
