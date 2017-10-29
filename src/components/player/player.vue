@@ -23,13 +23,15 @@
                 <img class="image" :src="currentSong.image">
               </div>
             </div>
-            <div class="playing-lyric-wrapper">
-              <div class="playing-lyric"></div>
-            </div>
           </div>
-          <div class="lyric-wrapper">
-            <div>
-              <p class="text"></p>
+          <div class="middle-r" ref="lyricList">
+            <div class="lyric-wrapper">
+              <div v-if="currentLyric">
+                <p ref="lyricLine"
+                   class="text"
+                   :class="{'current': currentLineNum ===index}"
+                   v-for="(line,index) in currentLyric.lines">{{line.txt}}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -113,7 +115,9 @@
         // 歌曲准备完才能切换,避免快速切换报错bug
         songReady: false, // 歌曲准备完毕标记
         currentTime: 0, // 当前歌曲的播放时间
-        radius: 32 // 圆形进度条的宽度
+        radius: 32, // 圆形进度条的宽度
+        currentLyric: null, // 当前歌曲歌词
+        currentLineNum: 0 // 当前歌词行数
       }
     },
     computed: {
@@ -294,8 +298,15 @@
       getLyric() {
         this.currentSong.getLyric().then((lyric) => {
           // 利用lyric-parser插件格式化歌词
-          this.currentLyric = new Lyric(lyric)
+          // 查看lyric-parser插件的api
+          this.currentLyric = new Lyric(lyric, this.handleLyric)
+          if (this.playing) {
+            this.currentLyric.play() // 插件封装的方法
+          }
         })
+      },
+      handleLyric({lineNum, txt}) {
+        this.currentLineNum = lineNum
       },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
