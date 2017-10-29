@@ -24,7 +24,7 @@
               </div>
             </div>
           </div>
-          <div class="middle-r" ref="lyricList">
+          <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
                 <p ref="lyricLine"
@@ -33,7 +33,7 @@
                    v-for="(line,index) in currentLyric.lines">{{line.txt}}</p>
               </div>
             </div>
-          </div>
+          </scroll>
         </div>
         <div class="bottom">
           <div class="dot-wrapper">
@@ -107,6 +107,7 @@
   import {shuffle} from '../../common/js/util'
   import ProgressBar from '../../base/progress-bar/progress-bar.vue'
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue'
+  import Scroll from '../../base/scroll/scroll.vue'
   import Lyric from 'lyric-parser'
   const transform = prefixStyle('transform')
   export default {
@@ -307,6 +308,12 @@
       },
       handleLyric({lineNum, txt}) {
         this.currentLineNum = lineNum
+        if (lineNum > 5) {
+          let lineEl = this.$refs.lyricLine[lineNum - 5]
+          this.$refs.lyricList.scrollToElement(lineEl, 1000)
+        } else {
+          this.$refs.lyricList.scrollTo(0, 0, 1000)
+        }
       },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
@@ -363,7 +370,8 @@
     },
     components: {
       ProgressBar,
-      ProgressCircle
+      ProgressCircle,
+      Scroll
     }
   }
 </script>
