@@ -14,6 +14,9 @@
           </ul>
         </li>
       </ul>
+      <div class="loading-container" v-show="!topList.length">
+        <loading></loading>
+      </div>
     </scroll>
     <router-view></router-view>
   </div>
@@ -23,6 +26,7 @@
   import {getTopList} from '../../api/rank'
   import {ERR_OK} from '../../api/config'
   import Scroll from '../../base/scroll/scroll.vue'
+  import Loading from '../../base/loading/loading.vue'
 
   export default {
     created() {
@@ -43,7 +47,8 @@
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>
