@@ -10,6 +10,7 @@ const state = {
   playlist: [], // 歌曲列表
   sequenceList: [], // 排序的歌曲列表
   mode: playMode.sequence, // 播放模式
-  currentIndex: -1
+  currentIndex: -1,
+  disc: {} // 推荐item详情
 }
 export default state

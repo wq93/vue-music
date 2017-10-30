@@ -19,3 +19,5 @@ export const currentSong = (state) => {
   return state.playlist[state.currentIndex] // 根据索引获取歌曲
 }
 
+export const disc = state => state.disc
+
