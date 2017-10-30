@@ -2,7 +2,7 @@
   <div class="rank" ref="rank">
     <scroll :data="topList" class="toplist" ref="toplist">
       <ul>
-        <li class="item" v-for="item in topList">
+        <li class="item" v-for="item in topList" @click="selectRankItem(item)">
           <div class="icon">
             <img width="100" height="100" v-lazy="item.picUrl"/>
           </div>
@@ -27,8 +27,9 @@
   import {ERR_OK} from '../../api/config'
   import Scroll from '../../base/scroll/scroll.vue'
   import Loading from '../../base/loading/loading.vue'
-
+  import {playlistMixin} from '../../common/js/mixin'
   export default {
+    mixins: [playlistMixin],
     created() {
       this._getTopList()
     },
@@ -38,6 +39,18 @@
       }
     },
     methods: {
+      // 调用封装的mixins方法
+      handlePlaylist(playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.rank.style.bottom = bottom
+        // 刷新
+        this.$refs.toplist.refresh()
+      },
+      selectRankItem (item) {
+        this.$router.push({
+          path: `/rank/${item.id}`
+        })
+      },
       _getTopList() {
         getTopList().then((res) => {
           if (res.code === ERR_OK) {
