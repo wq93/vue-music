@@ -44,7 +44,7 @@
   import {getRecommend, getDiscList} from '../../api/recommend'
   import {ERR_OK} from '../../api/config'
   import {playlistMixin} from '../../common/js/mixin'
-
+  import {mapMutations} from 'vuex'
   export default {
     mixins: [playlistMixin],
     data() {
@@ -62,6 +62,7 @@
         this.$router.push({
           path: `/recommend/${item.dissid}`
         })
+        this.setDisc(item)
       },
       _getRecommend() { // 调用封装的api请求轮播图数据
         getRecommend().then((res) => {
@@ -87,7 +88,10 @@
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.recommend.style.bottom = bottom
         this.$refs.scroll.refresh()
-      }
+      },
+      ...mapMutations({
+        setDisc: 'SET_DISC'
+      })
     },
     components: {
       Slider,
