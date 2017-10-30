@@ -16,7 +16,7 @@
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
           <ul>
-            <li v-for="item in discList" class="item">
+            <li v-for="item in discList" class="item" @click="selectItem(item)">
               <div class="icon">
                 <img width="60" height="60" v-lazy="item.imgurl" alt="">
               </div>
@@ -58,6 +58,11 @@
       this._getDiscList()
     },
     methods: {
+      selectItem(item) {
+        this.$router.push({
+          path: `/recommend/${item.dissid}`
+        })
+      },
       _getRecommend() { // 调用封装的api请求轮播图数据
         getRecommend().then((res) => {
           if (res.code === ERR_OK) {
