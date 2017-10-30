@@ -7,10 +7,18 @@
 <script type="text/ecmascript-6">
   import MusicList from '../../components/music-list/music-list.vue'
   import {mapGetters} from 'vuex'
+  import {getSongList} from '../../api/recommend'
+  import {createSong} from '../../common/js/song'
+  import {ERR_OK} from '../../api/config'
+  import $ from 'jquery'
   export default {
     computed: {
+      data() {
+        return {
+          songs: []
+        }
+      },
       title() {
-        console.log(this.disc)
         return this.disc.dissname
       },
       bgImage() {
@@ -19,6 +27,33 @@
       ...mapGetters([
         'disc'
       ])
+    },
+    created() {
+      this._getSongList()
+    },
+    methods: {
+      _getSongList() {
+        // 没有id, 跳转路由
+        if (!this.disc.dissid) {
+          this.$router.push('/recommend')
+          return
+        }
+        getSongList(this.disc.dissid).then((res) => {
+          if (res.code === ERR_OK) {
+            this.songs = this._normalizeSongs(res.cdlist[0].songlist)
+          }
+        })
+      },
+      _normalizeSongs(list) {
+        let ret = []
+        $.each(list, (i, v) => {
+          let {musicData} = v // es6解构赋值
+          if (musicData.songid && musicData.albumid) {
+            ret.push(createSong(musicData))
+          }
+        })
+        return ret
+      }
     },
     components: {
       MusicList
