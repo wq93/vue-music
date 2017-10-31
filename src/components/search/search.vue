@@ -1,14 +1,59 @@
 <template>
   <div class="search">
     <div class="search-box-wrapper">
-      <search-box></search-box>
+      <search-box ref="searchBox"></search-box>
+    </div>
+    <div ref="shortcutWrapper" class="shortcut-wrapper">
+      <div ref="shortcut" class="shortcut">
+        <div>
+          <div class="hot-key" v-show="hotKey.length!=0">
+            <h1 class="title">热门搜索</h1>
+            <ul>
+              <li @click="addQuery(item.k)" class="item" v-for="item in hotKey">
+                <span>{{item.k}}</span>
+              </li>
+            </ul>
+          </div>
+          <div class="search-history">
+            <h1 class="title">
+              <span class="text">搜索历史</span>
+              <span class="clear">
+                <i class="icon-clear"></i>
+              </span>
+            </h1>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {getHotKey} from '../../api/search'
+  import {ERR_OK} from '../../api/config'
   import SearchBox from '../../base/search-box/search-box.vue'
   export default {
+    created() {
+      this._getHotkey()
+    },
+    data() {
+      return {
+        hotKey: []
+      }
+    },
+    methods: {
+      addQuery(query) {
+        // 调用searchBox组件的setQuery方法
+        this.$refs.searchBox.setQuery(query)
+      },
+      _getHotkey() {
+        getHotKey().then((res) => {
+          if (res.code === ERR_OK) {
+            this.hotKey = res.data.hotkey.slice(0, 10)
+          }
+        })
+      }
+    },
     components: {
       SearchBox
     }
