@@ -16,7 +16,7 @@
 <script type="text/ecmascript-6">
   import {search} from '../../api/search'
   import {ERR_OK} from '../../api/config'
-  import {filterSinger} from '../../common/js/song'
+  import {createSong} from '../../common/js/song'
 
   const TYPE_SINGER = 'singer'
   export default {
@@ -55,7 +55,7 @@
         if (item.type === TYPE_SINGER) {
           return item.singername
         } else {
-          return `${item.songname}-${filterSinger(item.singer)}`
+          return `${item.name}-${item.singer}`
         }
       },
       _getResult(data) {
@@ -64,8 +64,18 @@
           ret.push({...data.zhida, ...{type: TYPE_SINGER}})
         }
         if (data.song) {
-          ret = ret.concat(data.song.list)
+          ret = ret.concat(this._normalizeSongs(data.song.list))
         }
+        return ret
+      },
+      _normalizeSongs(list) {
+        // 利用song类序列化数据
+        let ret = []
+        list.forEach((musicData) => {
+          if (musicData.songid && musicData.albumid) {
+            ret.push(createSong(musicData))
+          }
+        })
         return ret
       }
     },
