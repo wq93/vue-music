@@ -25,7 +25,7 @@
   import Scroll from '../../base/scroll/scroll.vue'
   import Loading from '../../base/loading/loading'
   import Singer from '../../common/js/singer'
-  import {mapMutations} from 'vuex'
+  import {mapMutations, mapActions} from 'vuex'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
@@ -105,6 +105,8 @@
           })
           // vuex 设置singer数据
           this.setSinger(singer)
+        } else {
+          this.insertSong(item)
         }
       },
       _getResult(data) {
@@ -135,7 +137,10 @@
       },
       ...mapMutations({
         setSinger: 'SET_SINGER'
-      })
+      }),
+      ...mapActions([
+        'insertSong'
+      ])
     },
     watch: {
       query() {
