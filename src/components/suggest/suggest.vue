@@ -1,5 +1,8 @@
 <template>
-  <div class="suggest">
+  <scroll class="suggest"
+          :data="result"
+          :pullup="pullup"
+          @scrollToEnd="searchMore">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="(item,index) in result">
         <div class="icon">
@@ -10,15 +13,18 @@
         </div>
       </li>
     </ul>
-  </div>
+  </scroll>
 </template>
 
 <script type="text/ecmascript-6">
   import {search} from '../../api/search'
   import {ERR_OK} from '../../api/config'
   import {createSong} from '../../common/js/song'
+  import Scroll from '../../base/scroll/scroll.vue'
+  import Loading from '../../base/loading'
 
   const TYPE_SINGER = 'singer'
+  const perpage = 20
   export default {
     props: {
       query: { // 查询参数
@@ -33,14 +39,34 @@
     data() {
       return {
         page: 1,
-        result: []
+        result: [],
+        pullup: true,
+        hasMore: true
       }
     },
     methods: {
       search() {
-        search(this.query, this.page, this.showSinger).then((res) => {
+        this.hasMore = true
+        search(this.query, this.page, this.showSinger, perpage).then((res) => {
           if (res.code === ERR_OK) {
             this.result = this._getResult(res.data)
+            // 改变hasMore的状态
+            this._checkMore(res.data)
+          }
+        })
+      },
+      searchMore() {
+        // 下拉加载更多
+        if (!this.hasMore) {
+          return
+        }
+        this.page++
+        search(this.query, this.page, this.showSinger, perpage).then((res) => {
+          if (res.code === ERR_OK) {
+            // 拼接之前的数据
+            this.result = this.result.concat(this._getResult(res.data))
+            // 改变hasMore的状态
+            this._checkMore(res.data)
           }
         })
       },
@@ -77,12 +103,22 @@
           }
         })
         return ret
+      },
+      _checkMore(data) {
+        const song = data.song
+        if (!song.list.length || (song.curnum + song.curpage * perpage) > song.totalnum) {
+          this.hasMore = false
+        }
       }
     },
     watch: {
       query() {
         this.search()
       }
+    },
+    components: {
+      Scroll,
+      Loading
     }
   }
 </script>

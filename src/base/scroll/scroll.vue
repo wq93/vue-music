@@ -6,6 +6,7 @@
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
+
   export default {
     props: {
       probeType: { // better-scroll的类别
@@ -21,6 +22,10 @@
         default: null
       },
       listenScroll: { // 是否需要监听滚动事件
+        type: Boolean,
+        default: false
+      },
+      pullup: { // 是否下拉刷新
         type: Boolean,
         default: false
       }
@@ -45,6 +50,15 @@
           let _this = this
           this.scroll.on('scroll', (pos) => {
             _this.$emit('scroll', pos)
+          })
+        }
+        // 如果支持下拉刷新
+        if (this.pullup) {
+          this.scroll.on('scrollEnd', () => {
+            // 快到底部时
+            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+              this.$emit('scrollToEnd') // 像父组件派发scrollToEnd事件
+            }
           })
         }
       },
