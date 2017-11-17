@@ -5,7 +5,7 @@
           ref="suggest"
           @scrollToEnd="searchMore">
     <ul class="suggest-list">
-      <li class="suggest-item" v-for="(item,index) in result">
+      <li class="suggest-item" v-for="(item,index) in result" @click="selectItem(item)">
         <div class="icon">
           <i :class="getIconCls(item)"></i>
         </div>
@@ -24,18 +24,20 @@
   import {createSong} from '../../common/js/song'
   import Scroll from '../../base/scroll/scroll.vue'
   import Loading from '../../base/loading/loading'
+  import Singer from '../../common/js/singer'
+  import {mapMutations} from 'vuex'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
   export default {
     props: {
+      showSinger: { // 是否展示歌手
+        type: Boolean,
+        default: true
+      },
       query: { // 查询参数
         type: String,
         default: ''
-      },
-      showSinger: { // 是否展示歌手
-        type: Boolean,
-        dafault: true
       }
     },
     data() {
@@ -52,8 +54,10 @@
         this.page = 1
         this.hasMore = true
         this.$refs.suggest.scrollTo(0, 0)
+        console.log(this.showSinger)
         search(this.query, this.page, this.showSinger, perpage).then((res) => {
           if (res.code === ERR_OK) {
+            console.log(res.data)
             this.result = this._getResult(res.data)
             // 改变hasMore的状态
             this._checkMore(res.data)
@@ -89,6 +93,20 @@
           return `${item.name}-${item.singer}`
         }
       },
+      selectItem(item) {
+        // 点击返回的搜索列表
+        if (item.type === TYPE_SINGER) {
+          const singer = new Singer({
+            id: item.singermid,
+            name: item.singername
+          })
+          this.$router.push({
+            path: `/search/${singer.id}`
+          })
+          // vuex 设置singer数据
+          this.setSinger(singer)
+        }
+      },
       _getResult(data) {
         let ret = []
         if (data.zhida && data.zhida.singerid) {
@@ -114,7 +132,10 @@
         if (!song.list.length || (song.curnum + song.curpage * perpage) > song.totalnum) {
           this.hasMore = false
         }
-      }
+      },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
     },
     watch: {
       query() {
@@ -123,7 +144,8 @@
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      Singer
     }
   }
 </script>
