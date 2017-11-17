@@ -2,6 +2,7 @@
   <scroll class="suggest"
           :data="result"
           :pullup="pullup"
+          ref="suggest"
           @scrollToEnd="searchMore">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="(item,index) in result">
@@ -12,6 +13,7 @@
           <p class="text" v-html="getDisplayName(item)"></p>
         </div>
       </li>
+      <loading v-show='hasMore' title=""></loading>
     </ul>
   </scroll>
 </template>
@@ -21,7 +23,7 @@
   import {ERR_OK} from '../../api/config'
   import {createSong} from '../../common/js/song'
   import Scroll from '../../base/scroll/scroll.vue'
-  import Loading from '../../base/loading'
+  import Loading from '../../base/loading/loading'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
@@ -46,7 +48,10 @@
     },
     methods: {
       search() {
+        // 改变query关键字时 page置为1
+        this.page = 1
         this.hasMore = true
+        this.$refs.suggest.scrollTo(0, 0)
         search(this.query, this.page, this.showSinger, perpage).then((res) => {
           if (res.code === ERR_OK) {
             this.result = this._getResult(res.data)
