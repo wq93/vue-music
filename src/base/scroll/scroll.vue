@@ -28,6 +28,10 @@
       pullup: { // 是否下拉刷新
         type: Boolean,
         default: false
+      },
+      beforeScroll: {
+        type: Boolean,
+        default: false
       }
     },
     // dom ready时调用方法
@@ -59,6 +63,12 @@
             if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
               this.$emit('scrollToEnd') // 像父组件派发scrollToEnd事件
             }
+          })
+        }
+        if (this.beforeScroll) {
+          // 如果父组件监听 则派发一个事件
+          this.scroll.on('beforeScrollStart', () => {
+            this.$emit('beforeScroll')
           })
         }
       },

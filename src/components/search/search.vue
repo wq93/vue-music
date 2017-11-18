@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="search-result" v-show="query">
-      <suggest :query="query" :showSinger="showSinger"></suggest>
+      <suggest :query="query" :showSinger="showSinger" @listScroll="blurInput"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -57,6 +57,9 @@
       onQueryChange(query) {
         // 监听子组件传入的变量变化
         this.query = query
+      },
+      blurInput() {
+        this.$refs.searchBox.blur()
       },
       _getHotkey() {
         getHotKey().then((res) => {

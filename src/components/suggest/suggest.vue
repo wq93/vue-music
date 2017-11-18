@@ -2,8 +2,10 @@
   <scroll class="suggest"
           :data="result"
           :pullup="pullup"
+          :beforeScroll="beforeScroll"
           ref="suggest"
-          @scrollToEnd="searchMore">
+          @scrollToEnd="searchMore"
+          @beforeScroll="listScroll">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="(item,index) in result" @click="selectItem(item)">
         <div class="icon">
@@ -49,7 +51,8 @@
         page: 1,
         result: [],
         pullup: true,
-        hasMore: true
+        hasMore: true,
+        beforeScroll: true
       }
     },
     methods: {
@@ -110,6 +113,10 @@
         } else {
           this.insertSong(item)
         }
+      },
+      listScroll() {
+        // 派发事件到父组件
+        this.$emit('listScroll')
       },
       _getResult(data) {
         let ret = []
