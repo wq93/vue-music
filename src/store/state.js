@@ -12,6 +12,7 @@ const state = {
   mode: playMode.sequence, // 播放模式
   currentIndex: -1,
   disc: {}, // 推荐item详情
-  topList: {} // 排行item详情
+  topList: {}, // 排行item详情
+  searchHistory: [] // 搜索历史
 }
 export default state
