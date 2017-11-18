@@ -5,6 +5,7 @@
 import * as types from './mutations-types'
 import {playMode} from '../common/js/config'
 import {shuffle} from '../common/js/util'
+import {saveSearch} from '../common/js/cache'
 
 /*
  * 找歌曲函数
@@ -91,4 +92,9 @@ export const insertSong = function ({commit, state}, song) {
   commit(types.SET_CURRENT_INDEX, currentIndex)
   commit(types.SET_FULL_SCREEN, true)
   commit(types.SET_PLAYING_STATE, true)
+}
+
+// 设置搜索历史数组
+export const saveSearchHistory = function ({commit}, query) {
+  commit(types.SET_SEARCH_HISTORY, saveSearch(query))
 }

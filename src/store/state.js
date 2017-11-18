@@ -2,6 +2,7 @@
  * 数据状态
  */
 import {playMode} from '../common/js/config'
+import {loadSearch} from '../common/js/cache'
 
 const state = {
   singer: {}, // 歌手详情信息
@@ -13,6 +14,6 @@ const state = {
   currentIndex: -1,
   disc: {}, // 推荐item详情
   topList: {}, // 排行item详情
-  searchHistory: [] // 搜索历史
+  searchHistory: loadSearch() // 搜索历史
 }
 export default state

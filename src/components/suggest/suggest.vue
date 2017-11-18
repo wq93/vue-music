@@ -113,6 +113,8 @@
         } else {
           this.insertSong(item)
         }
+        // 派发事件
+        this.$emit('select')
       },
       listScroll() {
         // 派发事件到父组件
