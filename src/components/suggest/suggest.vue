@@ -58,10 +58,8 @@
         this.page = 1
         this.hasMore = true
         this.$refs.suggest.scrollTo(0, 0)
-        console.log(this.showSinger)
         search(this.query, this.page, this.showSinger, perpage).then((res) => {
           if (res.code === ERR_OK) {
-            console.log(res.data)
             this.result = this._getResult(res.data)
             // 改变hasMore的状态
             this._checkMore(res.data)
