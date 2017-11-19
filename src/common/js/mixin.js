@@ -1,4 +1,5 @@
 import {mapGetters} from 'vuex'
+import {playMode} from 'common/js/config'
 export const playlistMixin = {
   computed: {
     ...mapGetters([
@@ -25,3 +26,4 @@ export const playlistMixin = {
     }
   }
 }
+
