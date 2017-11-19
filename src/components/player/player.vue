@@ -94,6 +94,7 @@
         </div>
       </div>
     </transition>
+    <playlist ref="playlist"></playlist>
     <!--歌曲播放-->
     <audio ref="audio"
            :src="currentSong.url"
@@ -115,6 +116,8 @@
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue'
   import Scroll from '../../base/scroll/scroll.vue'
   import Lyric from 'lyric-parser'
+  import Playlist from 'components/playlist/playlist'
+
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
   export default {
@@ -131,7 +134,7 @@
       }
     },
     computed: {
-      cdClass () { // cd图片的旋转
+      cdClass() { // cd图片的旋转
         return this.playing ? 'play' : 'play pause'
       },
       playIcon() { // 根据playing来计算播放键的状态
@@ -143,7 +146,7 @@
       disableClass() {
         return this.songReady ? '' : 'disable'
       },
-      iconMode () {
+      iconMode() {
         // 播放状态
         return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
       },
@@ -173,7 +176,7 @@
         this.setFullScreen(true)
       },
       // 配置动画钩子
-      enter (el, done) {
+      enter(el, done) {
         const {x, y, scale} = this._getPosAndScale()
 
         let animation = {
@@ -199,17 +202,17 @@
 
         animations.runAnimation(this.$refs.cdWrapper, 'move', done) // done表示跳到下一个动画状态
       },
-      afterEnter () {
+      afterEnter() {
         animations.unregisterAnimation('move')
         this.$refs.cdWrapper.style.animation = ''
       },
-      leave (el, done) {
+      leave(el, done) {
         this.$refs.cdWrapper.style.transition = 'all 0.4s'
         const {x, y, scale} = this._getPosAndScale()
         this.$refs.cdWrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`
         this.$refs.cdWrapper.addEventListener('transitionend', done)
       },
-      afterLeave () {
+      afterLeave() {
         this.$refs.cdWrapper.style.transition = ''
         this.$refs.cdWrapper.style[transform] = ''
       },
@@ -241,7 +244,7 @@
         }
         this.songReady = false
       },
-      end () {
+      end() {
         // 根据播放模式判断是否跳到下一首
         if (this.mode === playMode.loop) {
           this.loop()
@@ -413,7 +416,7 @@
         }
         return num
       },
-      _getPosAndScale () {
+      _getPosAndScale() {
         const targetWidth = 40 // 小唱片图标的宽度
         const paddingLeft = 40  // 小唱片图标的左padding
         const paddingBottom = 30 // 小唱片图标的下padding
@@ -467,7 +470,8 @@
     components: {
       ProgressBar,
       ProgressCircle,
-      Scroll
+      Scroll,
+      Playlist
     }
   }
 </script>
