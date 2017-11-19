@@ -13,7 +13,8 @@
           <ul ref="list">
             <li class="item"
                 v-for="(item,index) in sequenceList"
-                @click="selectItem(item,index)">
+                @click="selectItem(item,index)"
+                ref="listItem">
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{item.name}}</span>
               <span class="like">
@@ -64,6 +65,7 @@
         // dom数据填充的时候延迟刷新
         setTimeout(() => {
           this.$refs.listContent.refresh()
+          this.scrollToCurrent(this.currentSong) // 跳到当前歌曲
         }, 20)
       },
       hide() {
@@ -85,10 +87,28 @@
         this.setCurrentIndex(index) // 改变播放歌曲
         this.setPlayingState(true)  // 改变播放按钮
       },
+      scrollToCurrent(current) {
+        const index = this.sequenceList.findIndex((song) => {
+          return current.id === song.id
+        })
+        this.$refs.listContent.scrollToElement(this.$refs.listItem[index], 300)
+      },
       ...mapMutations({
         setCurrentIndex: 'SET_CURRENT_INDEX',
         setPlayingState: 'SET_PLAYING_STATE'
       })
+    },
+    watch: {
+      currentSong(newSong, oldSong) {
+        // 不张开||歌曲没有变化
+        if (!this.showFlag || newSong.id === oldSong.id) {
+          return
+        }
+        // 调用方法
+        setTimeout(() => {
+          this.scrollToCurrent(newSong)
+        }, 20)
+      }
     },
     components: {
       Scroll
