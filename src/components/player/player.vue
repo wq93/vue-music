@@ -447,6 +447,10 @@
       // bug1 : 当我们切换了播放模式时,虽然我们保存了当前的歌曲(记录id,再通过id去新数组中找)
       // 但是watch还是认为我们发生了改变,所以切换播放状态的时候会出现处于暂停时 自动播放bug
       currentSong(newSong, oldSong) {
+        // 当我们删除播放列表的一首歌的时候(播放列表为空)
+        if (!newSong) {
+          return
+        }
         // 判断歌曲的id没变,说明是同一首歌
         if (newSong.id === oldSong.id) {
           return

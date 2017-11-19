@@ -105,9 +105,9 @@ export const deleteSong = function ({commit, state}, song) {
   let sequenceList = state.sequenceList.slice()
   let currentIndex = state.currentIndex
   let pIndex = findIndex(playlist, song)
-  playlist.slice(pIndex, 1) // 删除播放列表中的一首
+  playlist.splice(pIndex, 1) // 删除播放列表中的一首
   let sIndex = findIndex(sequenceList, song)
-  sequenceList.slice(sIndex, 1)// 删除随机播放列表中的一首
+  sequenceList.splice(sIndex, 1)// 删除随机播放列表中的一首
 
   // 当前索引>列表索引 || 等于列表长度
   if (currentIndex > pIndex || currentIndex === playlist.length) {

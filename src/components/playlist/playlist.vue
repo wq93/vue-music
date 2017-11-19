@@ -10,8 +10,10 @@
           </h1>
         </div>
         <scroll ref="listContent" class="list-content" :data="sequenceList">
-          <ul ref="list">
-            <li class="item"
+          <transition-group ref="list" name="list" tag="ul">
+            <!--要求子元素有key,保证每个元素是不同的-->
+            <li :key="item.id"
+                class="item"
                 v-for="(item,index) in sequenceList"
                 @click="selectItem(item,index)"
                 ref="listItem">
@@ -20,11 +22,11 @@
               <span class="like">
                 <i class="icon-favorite"></i>
               </span>
-              <span class="delete">
+              <span class="delete" @click.stop="deleteOne(item)">
                 <i class="icon-delete"></i>
               </span>
             </li>
-          </ul>
+          </transition-group>
         </scroll>
         <div class="list-operate">
           <div class="add">
@@ -43,7 +45,7 @@
 <script type="text/ecmascript-6">
   import {playMode} from '../../common/js/config'
   import Scroll from '../../base/scroll/scroll.vue'
-  import {mapGetters, mapMutations} from 'vuex'
+  import {mapGetters, mapMutations, mapActions} from 'vuex'
 
   export default {
     data() {
@@ -87,6 +89,14 @@
         this.setCurrentIndex(index) // 改变播放歌曲
         this.setPlayingState(true)  // 改变播放按钮
       },
+      deleteOne(item) {
+        // 通过actions删除歌曲
+        this.deleteSong(item)
+        console.log(this.playlist.length)
+        if (!this.playlist.length) {
+          this.hide()
+        }
+      },
       scrollToCurrent(current) {
         const index = this.sequenceList.findIndex((song) => {
           return current.id === song.id
@@ -96,7 +106,10 @@
       ...mapMutations({
         setCurrentIndex: 'SET_CURRENT_INDEX',
         setPlayingState: 'SET_PLAYING_STATE'
-      })
+      }),
+      ...mapActions([
+        'deleteSong'
+      ])
     },
     watch: {
       currentSong(newSong, oldSong) {
