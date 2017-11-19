@@ -12,7 +12,7 @@
         <scroll ref="listContent" class="list-content" :data="sequenceList">
           <ul ref="list">
             <li class="item" v-for="item in sequenceList">
-              <i class="current"></i>
+              <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{item.name}}</span>
               <span class="like">
                 <i class="icon-favorite"></i>
@@ -49,7 +49,8 @@
     },
     computed: {
       ...mapGetters([
-        'sequenceList'
+        'sequenceList',
+        'currentSong'
       ])
     },
     methods: {
@@ -62,6 +63,12 @@
       },
       hide() {
         this.showFlag = false
+      },
+      getCurrentIcon(item) {
+        if (item.id === this.currentSong.id) {
+          return 'icon-play'
+        }
+        return ''
       }
     },
     components: {
