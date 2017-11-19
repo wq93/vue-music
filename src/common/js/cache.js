@@ -31,6 +31,5 @@ export function saveSearch(query) {
 }
 
 export function loadSearch() {
-  console.log(storage.get(SEARCH_KEY, []))
   return storage.get(SEARCH_KEY, [])
 }
