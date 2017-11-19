@@ -9,11 +9,11 @@
             <span class="clear"><i class="icon-clear"></i></span>
           </h1>
         </div>
-        <scroll ref="listContent" class="list-content">
+        <scroll ref="listContent" class="list-content" :data="sequenceList">
           <ul ref="list">
-            <li class="item">
+            <li class="item" v-for="item in sequenceList">
               <i class="current"></i>
-              <span class="text"></span>
+              <span class="text">{{item.name}}</span>
               <span class="like">
                 <i class="icon-favorite"></i>
               </span>
@@ -38,19 +38,34 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import Scroll from '../../base/scroll/scroll.vue'
+  import {mapGetters} from 'vuex'
+
   export default {
     data() {
       return {
         showFlag: false
       }
     },
+    computed: {
+      ...mapGetters([
+        'sequenceList'
+      ])
+    },
     methods: {
       show() {
         this.showFlag = true
+        // dom数据填充的时候延迟刷新
+        setTimeout(() => {
+          this.$refs.listContent.refresh()
+        }, 20)
       },
       hide() {
         this.showFlag = false
       }
+    },
+    components: {
+      Scroll
     }
   }
 </script>
