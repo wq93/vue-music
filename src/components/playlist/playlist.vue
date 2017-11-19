@@ -11,7 +11,9 @@
         </div>
         <scroll ref="listContent" class="list-content" :data="sequenceList">
           <ul ref="list">
-            <li class="item" v-for="item in sequenceList">
+            <li class="item"
+                v-for="(item,index) in sequenceList"
+                @click="selectItem(item,index)">
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{item.name}}</span>
               <span class="like">
@@ -38,8 +40,9 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {playMode} from '../../common/js/config'
   import Scroll from '../../base/scroll/scroll.vue'
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex'
 
   export default {
     data() {
@@ -50,7 +53,9 @@
     computed: {
       ...mapGetters([
         'sequenceList',
-        'currentSong'
+        'currentSong',
+        'mode',
+        'playlist'
       ])
     },
     methods: {
@@ -69,7 +74,21 @@
           return 'icon-play'
         }
         return ''
-      }
+      },
+      selectItem(item, index) {
+        // 如果是随机播放的时候，找到index
+        if (this.mode === playMode.random) {
+          index = this.playlist.findIndex((song) => {
+            return song.id === item.id
+          })
+        }
+        this.setCurrentIndex(index) // 改变播放歌曲
+        this.setPlayingState(true)  // 改变播放按钮
+      },
+      ...mapMutations({
+        setCurrentIndex: 'SET_CURRENT_INDEX',
+        setPlayingState: 'SET_PLAYING_STATE'
+      })
     },
     components: {
       Scroll
