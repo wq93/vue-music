@@ -89,7 +89,7 @@
             <!--作为ProgressCircle组件的slot插槽-->
           </progress-circle>
         </div>
-        <div class="control">
+        <div class="control" @click.stop="showPlaylist">
           <i class="icon-playlist"></i>
         </div>
       </div>
@@ -407,6 +407,9 @@
         this.$refs.middleL.style.opacity = opacity
         this.$refs.middleL.style[transitionDuration] = `${time}ms`
         this.touch.initiated = false
+      },
+      showPlaylist() {
+        this.$refs.playlist.show()
       },
       _pad(num, n = 2) { // 秒小于10时,补0
         let len = num.toString().length
