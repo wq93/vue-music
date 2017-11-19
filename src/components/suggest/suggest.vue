@@ -120,6 +120,9 @@
         // 派发事件到父组件
         this.$emit('listScroll')
       },
+      refresh() {
+        this.$refs.suggest.refresh()
+      },
       _getResult(data) {
         let ret = []
         if (data.zhida && data.zhida.singerid) {

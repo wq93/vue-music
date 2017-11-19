@@ -4,7 +4,7 @@
       <search-box ref="searchBox" @query="onQueryChange"></search-box>
     </div>
     <div ref="shortcutWrapper" class="shortcut-wrapper" v-show="!query">
-      <div ref="shortcut" class="shortcut">
+      <scroll ref="shortcut" class="shortcut" :data="shortcut">
         <div>
           <div class="hot-key" v-show="hotKey.length!=0">
             <h1 class="title">热门搜索</h1>
@@ -24,10 +24,14 @@
             <search-list :searches="searchHistory"></search-list>
           </div>
         </div>
-      </div>
+      </scroll>
     </div>
-    <div class="search-result" v-show="query">
-      <suggest :query="query" :showSinger="showSinger" @select="saveSearch" @listScroll="blurInput"></suggest>
+    <div class="search-result" v-show="query" ref="searchResult">
+      <suggest ref="suggest"
+               :query="query"
+               :showSinger="showSinger"
+               @select="saveSearch"
+               @listScroll="blurInput"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -36,16 +40,22 @@
 <script type="text/ecmascript-6">
   import {getHotKey} from '../../api/search'
   import {ERR_OK} from '../../api/config'
+  import Scroll from '../../base/scroll/scroll'
   import SearchBox from '../../base/search-box/search-box.vue'
   import Suggest from '../../components/suggest/suggest.vue'
   import {mapActions, mapGetters} from 'vuex'
   import SearchList from '../../base/search-list/search-list.vue'
+  import {playlistMixin} from 'common/js/mixin'
 
   export default {
+    mixins: [playlistMixin],
     created() {
       this._getHotkey()
     },
     computed: {
+      shortcut() {
+        return this.hotKey.concat(this.searchHistory)
+      },
       ...mapGetters([
         'searchHistory'
       ])
@@ -58,6 +68,14 @@
       }
     },
     methods: {
+      handlePlaylist(playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.shortcutWrapper.style.bottom = bottom
+        this.$refs.shortcut.refresh()
+
+        this.$refs.searchResult.style.bottom = bottom
+        this.$refs.suggest.refresh()
+      },
       addQuery(query) {
         // 调用searchBox组件的setQuery方法
         this.$refs.searchBox.setQuery(query)
@@ -87,7 +105,8 @@
     components: {
       SearchBox,
       Suggest,
-      SearchList
+      SearchList,
+      Scroll
     }
   }
 </script>
