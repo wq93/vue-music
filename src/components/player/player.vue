@@ -111,16 +111,17 @@
   import animations from 'create-keyframe-animation'
   import {prefixStyle} from '../../common/js/dom'
   import {playMode} from '../../common/js/config'
-  import {shuffle} from '../../common/js/util'
   import ProgressBar from '../../base/progress-bar/progress-bar.vue'
   import ProgressCircle from '../../base/progress-circle/progress-circle.vue'
   import Scroll from '../../base/scroll/scroll.vue'
   import Lyric from 'lyric-parser'
   import Playlist from 'components/playlist/playlist'
+  import {playerMixin} from '../../common/js/mixin'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
   export default {
+    mixins: [playerMixin],
     data() {
       return {
         // 歌曲准备完才能切换,避免快速切换报错bug
@@ -146,22 +147,22 @@
       disableClass() {
         return this.songReady ? '' : 'disable'
       },
-      iconMode() {
-        // 播放状态
-        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-      },
+//      iconMode() {
+//        // 播放状态
+//        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+//      },
       percent() {
         // 根据当前播放时间/歌曲总时间计算百分比
         return this.currentTime / this.currentSong.duration
       },
       ...mapGetters([
         'fullScreen', // 是否全屏
-        'playlist', // 播放列表
-        'currentSong', // 当前播放歌曲
+//        'playlist', // 播放列表
+//        'currentSong', // 当前播放歌曲
         'playing', // 播放/暂停
-        'currentIndex', // 当前播放歌曲索引
-        'mode', // 播放模式
-        'sequenceList' // 初始歌曲列表
+        'currentIndex' // 当前播放歌曲索引
+//        'mode', // 播放模式
+//        'sequenceList' // 初始歌曲列表
       ])
     },
     created() {
@@ -311,29 +312,29 @@
           this.currentLyric.seek(currentTime * 1000)
         }
       },
-      changeMode() {
-        const mode = (this.mode + 1) % 3
-        this.setPlaymode(mode)
-        // 切换播放状态,更换歌曲列表
-        let list = null
-        if (mode === playMode.random) {
-          list = shuffle(this.sequenceList)
-        } else {
-          list = this.sequenceList
-        }
-        // 记录当前歌曲,避免切换播放状态找不到这首歌
-        this.resetCurrentIndex(list)
-        // 更换store中的playList
-        this.setPlayList(list)
-      },
-      resetCurrentIndex(list) {
-        let index = list.findIndex((item) => {
-          // 判断歌曲的唯一id
-          return item.id === this.currentSong.id
-        })
-        // 改变store中的index
-        this.setCurrentIndex(index)
-      },
+//      changeMode() {
+//        const mode = (this.mode + 1) % 3
+//        this.setPlaymode(mode)
+//        // 切换播放状态,更换歌曲列表
+//        let list = null
+//        if (mode === playMode.random) {
+//          list = shuffle(this.sequenceList)
+//        } else {
+//          list = this.sequenceList
+//        }
+//        // 记录当前歌曲,避免切换播放状态找不到这首歌
+//        this.resetCurrentIndex(list)
+//        // 更换store中的playList
+//        this.setPlayList(list)
+//      },
+//      resetCurrentIndex(list) {
+//        let index = list.findIndex((item) => {
+//          // 判断歌曲的唯一id
+//          return item.id === this.currentSong.id
+//        })
+//        // 改变store中的index
+//        this.setCurrentIndex(index)
+//      },
       getLyric() {
         this.currentSong.getLyric().then((lyric) => {
           // 利用lyric-parser插件格式化歌词
@@ -436,11 +437,11 @@
         }
       },
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN',
-        setPlayingState: 'SET_PLAYING_STATE',
-        setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlaymode: 'SET_PLAY_MODE',
-        setPlayList: 'SET_PLAYLIST'
+        setFullScreen: 'SET_FULL_SCREEN'
+//        setPlayingState: 'SET_PLAYING_STATE',
+//        setCurrentIndex: 'SET_CURRENT_INDEX',
+//        setPlaymode: 'SET_PLAY_MODE',
+//        setPlayList: 'SET_PLAYLIST'
       })
     },
     watch: {
