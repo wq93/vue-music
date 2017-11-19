@@ -98,3 +98,28 @@ export const insertSong = function ({commit, state}, song) {
 export const saveSearchHistory = function ({commit}, query) {
   commit(types.SET_SEARCH_HISTORY, saveSearch(query))
 }
+
+// 删除歌曲
+export const deleteSong = function ({commit, state}, song) {
+  let playlist = state.playlist.slice()
+  let sequenceList = state.sequenceList.slice()
+  let currentIndex = state.currentIndex
+  let pIndex = findIndex(playlist, song)
+  playlist.slice(pIndex, 1) // 删除播放列表中的一首
+  let sIndex = findIndex(sequenceList, song)
+  sequenceList.slice(sIndex, 1)// 删除随机播放列表中的一首
+
+  // 当前索引>列表索引 || 等于列表长度
+  if (currentIndex > pIndex || currentIndex === playlist.length) {
+    currentIndex--
+  }
+  commit(types.SET_PLAYLIST, playlist)
+  commit(types.SET_SEQUENCE_LIST, sequenceList)
+  commit(types.SET_CURRENT_INDEX, currentIndex)
+
+  if (!playlist.length) { // 没有暂停播放
+    commit(types.SET_PLAYING_STATE, false)
+  } else {
+    commit(types.SET_PLAYING_STATE, true)
+  }
+}
