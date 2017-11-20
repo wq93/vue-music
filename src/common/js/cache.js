@@ -6,6 +6,9 @@ const SEARCH_MAX_LEN = 15
 const FAVORITE_KEY = '__favorite__'
 const FAVORITE_MAX_LEN = 200
 
+const PLAY_KEY = '__play__'
+const PLAY_MAX_LEN = 200
+
 // 插入歌曲
 function insertArray(arr, val, compare, maxLen) {
   // 查找query在数组的index
@@ -42,9 +45,40 @@ export function saveSearch(query) {
   return searches
 }
 
+// 删除搜索记录(单)
+export function deleteSearch(query) {
+  let searches = storage.get(SEARCH_KEY, [])
+  deleteFromArray(searches, (item) => {
+    return item === query
+  })
+  storage.set(SEARCH_KEY, searches)
+  return searches
+}
+
+// 清楚搜索记录
+export function clearSearch() {
+  storage.remove(SEARCH_KEY)
+  return []
+}
+
 // 获取搜索记录
 export function loadSearch() {
   return storage.get(SEARCH_KEY, [])
+}
+
+// 保存播放历史歌手
+export function savePlay(song) {
+  let songs = storage.get(PLAY_KEY, [])
+  insertArray(songs, song, (item) => {
+    return song.id === item.id
+  }, PLAY_MAX_LEN)
+  storage.set(PLAY_KEY, songs)
+  return songs
+}
+
+// 获取播放历史歌手
+export function loadPlay() {
+  return storage.get(PLAY_KEY, [])
 }
 
 // 保存我喜欢歌曲

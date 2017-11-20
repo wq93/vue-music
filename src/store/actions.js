@@ -5,7 +5,7 @@
 import * as types from './mutations-types'
 import {playMode} from '../common/js/config'
 import {shuffle} from '../common/js/util'
-import {saveSearch, saveFavorite, deleteFavorite} from '../common/js/cache'
+import {saveSearch, clearSearch, deleteSearch, savePlay, saveFavorite, deleteFavorite} from '../common/js/cache'
 
 /*
  * 找歌曲函数
@@ -94,9 +94,16 @@ export const insertSong = function ({commit, state}, song) {
   commit(types.SET_PLAYING_STATE, true)
 }
 
-// 设置搜索历史数组
+// 保存搜索历史数组
 export const saveSearchHistory = function ({commit}, query) {
   commit(types.SET_SEARCH_HISTORY, saveSearch(query))
+}
+export const deleteSearchHistory = function ({commit}, query) {
+  commit(types.SET_SEARCH_HISTORY, deleteSearch(query))
+}
+
+export const clearSearchHistory = function ({commit}) {
+  commit(types.SET_SEARCH_HISTORY, clearSearch())
 }
 
 // 删除歌曲
@@ -129,6 +136,10 @@ export const deleteSongList = function ({commit}) {
   commit(types.SET_PLAYLIST, [])
   commit(types.SET_SEQUENCE_LIST, [])
   commit(types.SET_PLAYING_STATE, false)
+}
+// 保存歌手历史
+export const savePlayHistory = function ({commit}, song) {
+  commit(types.SET_PLAY_HISTORY, savePlay(song))
 }
 
 // 保存我喜欢列表
