@@ -98,7 +98,7 @@
     <!--歌曲播放-->
     <audio ref="audio"
            :src="currentSong.url"
-           @canplay="ready"
+           @play="ready"
            @error="error"
            @timeupdate="updateTime"
            @ended="end"
@@ -338,6 +338,10 @@
 //      },
       getLyric() {
         this.currentSong.getLyric().then((lyric) => {
+          // 当前的歌曲的歌词和歌词不一致时
+          if (this.currentSong.lyric !== lyric) {
+            return
+          }
           // 利用lyric-parser插件格式化歌词
           // 查看lyric-parser插件的api
           this.currentLyric = new Lyric(lyric, this.handleLyric)
@@ -465,7 +469,8 @@
           this.currentLyric.stop()
         }
         // 避免在移动端后台进程切到前台,js没有执行完毕就开始播放歌曲的bug
-        setTimeout(() => {
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
           // 歌曲变化时播放歌曲
           this.$refs.audio.play()
           this.getLyric()
