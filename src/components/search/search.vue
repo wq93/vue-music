@@ -33,7 +33,7 @@
                @select="saveSearch"
                @listScroll="blurInput"></suggest>
     </div>
-    <confirm ref="confirm" text="是否清空所有搜索历史" confirmBtnText="清空"></confirm>
+    <confirm ref="confirm" @confirm="clearSearchHistory" text="是否清空所有搜索历史" confirmBtnText="清空"></confirm>
     <router-view></router-view>
   </div>
 </template>
