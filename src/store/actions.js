@@ -5,7 +5,7 @@
 import * as types from './mutations-types'
 import {playMode} from '../common/js/config'
 import {shuffle} from '../common/js/util'
-import {saveSearch} from '../common/js/cache'
+import {saveSearch, saveFavorite, deleteFavorite} from '../common/js/cache'
 
 /*
  * 找歌曲函数
@@ -129,4 +129,13 @@ export const deleteSongList = function ({commit}) {
   commit(types.SET_PLAYLIST, [])
   commit(types.SET_SEQUENCE_LIST, [])
   commit(types.SET_PLAYING_STATE, false)
+}
+
+// 保存我喜欢列表
+export const saveFavoriteList = function ({commit}, song) {
+  commit(types.SET_FAVORITE_LIST, saveFavorite(song))
+}
+// 删除我喜欢列表
+export const deleteFavoriteList = function ({commit}, song) {
+  commit(types.SET_FAVORITE_LIST, deleteFavorite(song))
 }

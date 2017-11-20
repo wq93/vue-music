@@ -21,6 +21,7 @@
     },
     methods: {
       switchItem(index) {
+        // 向父组件派发事件
         this.$emit('switch', index)
       }
     }

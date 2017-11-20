@@ -4,7 +4,9 @@
       <div class="back">
         <i class="icon-back"></i>
       </div>
-      <div class="switches-wrapper"></div>
+      <div class="switches-wrapper">
+        <switches @switch="switchItem" :switches="switches" :currentIndex="currentIndex"></switches>
+      </div>
       <div class="play-btn" ref="playBtn">
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
@@ -15,7 +17,33 @@
 </template>
 
 <script type="text/ecmascript-6">
-  export default {}
+  import Switches from 'base/switches/switches'
+
+  export default {
+    data() {
+      return {
+        currentIndex: 0,
+        switches: [
+          {
+            name: '我喜欢的'
+          },
+          {
+            name: '最近听的'
+          }
+        ]
+      }
+    },
+    methods: {
+      // 子组件传递过来的事件
+      switchItem(index) {
+        console.log(index)
+        this.currentIndex = index
+      }
+    },
+    components: {
+      Switches
+    }
+  }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
