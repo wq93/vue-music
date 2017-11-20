@@ -107,7 +107,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapGetters, mapMutations} from 'vuex'
+  import {mapGetters, mapMutations,mapActions} from 'vuex'
   import animations from 'create-keyframe-animation'
   import {prefixStyle} from '../../common/js/dom'
   import {playMode} from '../../common/js/config'
@@ -286,6 +286,7 @@
       },
       ready() { // audio自带的资源准备完毕事件
         this.songReady = true
+        this.savePlayHistory(this.currentSong)
       },
       error() { // audio自带的资源准备出错事件
         this.songReady = true
@@ -441,7 +442,10 @@
 //        setCurrentIndex: 'SET_CURRENT_INDEX',
 //        setPlaymode: 'SET_PLAY_MODE',
 //        setPlayList: 'SET_PLAYLIST'
-      })
+      }),
+      ...mapActions([
+        'savePlayHistory'
+      ])
     },
     watch: {
       // bug1 : 当我们切换了播放模式时,虽然我们保存了当前的歌曲(记录id,再通过id去新数组中找)

@@ -1,24 +1,23 @@
 <template>
   <transition name="slide">
     <div class="user-center">
-      <div class="back">
-        <i class="icon-back" @click="back"></i>
+      <div class="back" @click="back">
+        <i class="icon-back"></i>
       </div>
       <div class="switches-wrapper">
         <switches @switch="switchItem" :switches="switches" :currentIndex="currentIndex"></switches>
       </div>
-      <div class="play-btn" ref="playBtn">
+      <div class="play-btn" ref="playBtn" @click="random">
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
       </div>
       <div class="list-wrapper" ref="listWrapper">
-        <scroll ref="favoriteList" v-if="currentIndex===0" class="list-scroll" :data="playHistory">
+        <scroll ref="favoriteList" class="list-scroll" v-if="currentIndex===0" :data="favoriteList">
           <div class="list-inner">
             <song-list :songs="favoriteList" @select="selectSong"></song-list>
           </div>
         </scroll>
-        <scroll ref="playList" v-if="currentIndex===1" class="list-scroll"
-                :data="playHistory">
+        <scroll ref="playList" class="list-scroll" v-if="currentIndex===1" :data="playHistory">
           <div class="list-inner">
             <song-list :songs="playHistory" @select="selectSong"></song-list>
           </div>
@@ -69,8 +68,21 @@
       back() {
         this.$router.back()
       },
+      random() {
+        // 播放那个列表
+        let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
+        if (list.length === 0) {
+          return
+        }
+        list = list.map((song) => {
+          return new Song(song)
+        })
+        this.randomPlay({list})
+      },
       ...mapActions([
-        'insertSong'
+        'insertSong',
+        'randomPlay',
+        'savePlayHistory'
       ])
     },
     components: {
