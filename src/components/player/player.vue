@@ -270,6 +270,7 @@
         // 如果当前playlist就一首歌,length=1
         if (this.playlist.length === 1) {
           this.loop() // 循环播放
+          return
         } else {
           let index = this.currentIndex + 1
           if (index === this.playlist.length) {
