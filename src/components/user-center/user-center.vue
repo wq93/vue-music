@@ -2,7 +2,7 @@
   <transition name="slide">
     <div class="user-center">
       <div class="back">
-        <i class="icon-back"></i>
+        <i class="icon-back" @click="back"></i>
       </div>
       <div class="switches-wrapper">
         <switches @switch="switchItem" :switches="switches" :currentIndex="currentIndex"></switches>
@@ -11,14 +11,29 @@
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
       </div>
-      <div class="list-wrapper" ref="listWrapper"></div>
+      <div class="list-wrapper" ref="listWrapper">
+        <scroll ref="favoriteList" v-if="currentIndex===0" class="list-scroll" :data="playHistory">
+          <div class="list-inner">
+            <song-list :songs="favoriteList" @select="selectSong"></song-list>
+          </div>
+        </scroll>
+        <scroll ref="playList" v-if="currentIndex===1" class="list-scroll"
+                :data="playHistory">
+          <div class="list-inner">
+            <song-list :songs="playHistory" @select="selectSong"></song-list>
+          </div>
+        </scroll>
+      </div>
     </div>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
   import Switches from 'base/switches/switches'
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
+  import Scroll from '../../base/scroll/scroll.vue'
+  import SongList from '../../base/song-list/song-list'
+  import Song from 'common/js/song'
 
   export default {
     data() {
@@ -45,10 +60,23 @@
       switchItem(index) {
         console.log(index)
         this.currentIndex = index
-      }
+      },
+      // 子组件传入的事件
+      selectSong(song) {
+        // 引入Song类格式化数据
+        this.insertSong(new Song(song))
+      },
+      back() {
+        this.$router.back()
+      },
+      ...mapActions([
+        'insertSong'
+      ])
     },
     components: {
-      Switches
+      Switches,
+      Scroll,
+      SongList
     }
   }
 </script>
