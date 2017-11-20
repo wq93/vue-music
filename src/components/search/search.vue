@@ -33,7 +33,7 @@
                @select="saveSearch"
                @listScroll="blurInput"></suggest>
     </div>
-    <confirm ref="confirm" @confirm="clearSearchHistory" text="是否清空所有搜索历史" confirmBtnText="清空"></confirm>
+    <confirm ref="confirm" text="是否清空所有搜索历史" confirmBtnText="清空"></confirm>
     <router-view></router-view>
   </div>
 </template>
@@ -46,7 +46,7 @@
   import Suggest from '../../components/suggest/suggest.vue'
   import {mapActions, mapGetters} from 'vuex'
   import SearchList from '../../base/search-list/search-list.vue'
-  import Confirm from 'base/confirm/confirm'
+  import Confirm from '../../base/confirm/confirm'
   import {playlistMixin} from 'common/js/mixin'
 
   export default {
