@@ -17,11 +17,11 @@
           <div class="search-history" v-show="searchHistory.length">
             <h1 class="title">
               <span class="text">搜索历史</span>
-              <span class="clear">
+              <span @click="showConfirm" class="clear">
                 <i class="icon-clear"></i>
               </span>
             </h1>
-            <search-list :searches="searchHistory"></search-list>
+            <search-list @select="addQuery" :searches="searchHistory"></search-list>
           </div>
         </div>
       </scroll>
@@ -33,6 +33,7 @@
                @select="saveSearch"
                @listScroll="blurInput"></suggest>
     </div>
+    <confirm ref="confirm" @confirm="clearSearchHistory" text="是否清空所有搜索历史" confirmBtnText="清空"></confirm>
     <router-view></router-view>
   </div>
 </template>
@@ -45,6 +46,7 @@
   import Suggest from '../../components/suggest/suggest.vue'
   import {mapActions, mapGetters} from 'vuex'
   import SearchList from '../../base/search-list/search-list.vue'
+  import Confirm from 'base/confirm/confirm'
   import {playlistMixin} from 'common/js/mixin'
 
   export default {
@@ -91,6 +93,9 @@
         // 设置搜索数组
         this.saveSearchHistory(this.query)
       },
+      showConfirm() {
+        this.$refs.confirm.show()
+      },
       _getHotkey() {
         getHotKey().then((res) => {
           if (res.code === ERR_OK) {
@@ -99,14 +104,16 @@
         })
       },
       ...mapActions([
-        'saveSearchHistory'
+        'saveSearchHistory',
+        'clearSearchHistory'
       ])
     },
     components: {
       SearchBox,
       Suggest,
       SearchList,
-      Scroll
+      Scroll,
+      Confirm
     }
   }
 </script>
