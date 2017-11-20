@@ -18,6 +18,7 @@
 
 <script type="text/ecmascript-6">
   import Switches from 'base/switches/switches'
+  import {mapGetters} from 'vuex'
 
   export default {
     data() {
@@ -32,6 +33,12 @@
           }
         ]
       }
+    },
+    computed: {
+      ...mapGetters([
+        'playHistory',
+        'favoriteList'
+      ])
     },
     methods: {
       // 子组件传递过来的事件
