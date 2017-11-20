@@ -38,7 +38,8 @@ export const playerMixin = {
       'playlist', // 播放列表
       'currentSong', // 当前播放歌曲
       'mode', // 播放模式
-      'sequenceList' // 初始歌曲列表
+      'sequenceList', // 初始歌曲列表
+      'favoriteList' // 喜欢列表
     ])
   },
   methods: {
@@ -64,6 +65,27 @@ export const playerMixin = {
       })
       // 改变store中的index
       this.setCurrentIndex(index)
+    },
+    toggleFavorite(song) {
+      if (this.isFavorite(song)) {
+        this.deleteFavoriteList(song)
+      } else {
+        this.saveFavoriteList(song)
+      }
+    },
+    // 返回favorite-icon状态的classs
+    getFavoriteIcon(song) {
+      if (this.isFavorite(song)) {
+        return 'icon-favorite'
+      }
+      return 'icon-not-favorite'
+    },
+    // 判断当前的这首歌在不在喜欢的列表中
+    isFavorite(song) {
+      const index = this.favoriteList.findIndex((item) => {
+        return item.id === song.id
+      })
+      return index > -1
     },
     ...mapMutations({
       setPlayingState: 'SET_PLAYING_STATE',

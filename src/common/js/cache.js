@@ -10,7 +10,6 @@ const FAVORITE_MAX_LEN = 200
 function insertArray(arr, val, compare, maxLen) {
   // 查找query在数组的index
   const index = arr.findIndex(compare)
-  console.log(compare, index)
   // 第一位不做什么
   if (index === 0) {
     return
