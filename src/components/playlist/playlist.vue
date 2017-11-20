@@ -99,7 +99,6 @@
       deleteOne(item) {
         // 通过actions删除歌曲
         this.deleteSong(item)
-        console.log(this.playlist.length)
         if (!this.playlist.length) {
           this.hide()
         }
@@ -111,7 +110,6 @@
         this.$refs.listContent.scrollToElement(this.$refs.listItem[index], 300)
       },
       showConfirm() {
-        console.log('1')
         this.$refs.confirm.show()
       },
       confirmClear() {

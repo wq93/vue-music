@@ -374,7 +374,6 @@
         const left = this.currentShow === 'cd' ? 0 : -window.innerWidth // 左边距
         const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
         this.touch.percent = Math.abs(offsetWidth / window.innerWidth) // 滑动的距离/屏幕的宽度
-        console.log(this.touch.percent)
         this.$refs.lyricList.$el.style[transitionDuration] = 0
         this.$refs.middleL.style.opacity = 1 - this.touch.percent // 区块的透明度
         this.$refs.middleL.style[transitionDuration] = 0
