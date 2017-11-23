@@ -10,6 +10,7 @@ export const playlistMixin = {
   },
   // dom准备完
   mounted() {
+    console.log(this.$route.params)
     this.handlePlaylist(this.playlist)
   },
   // keep-alive切换过来时触发

@@ -1,4 +1,4 @@
-var chalk = require('chalk')
+var chalk = require('chalk') // webpack的颜色
 var semver = require('semver')
 var packageConfig = require('../package.json')
 var shell = require('shelljs')

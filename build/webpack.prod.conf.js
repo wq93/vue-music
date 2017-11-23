@@ -14,7 +14,7 @@ var env = config.build.env
 var webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,
+      sourceMap: config.build.productionSourceMap, // 启动调试模式
       extract: true
     })
   },
@@ -49,14 +49,14 @@ var webpackConfig = merge(baseWebpackConfig, {
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
-    new HtmlWebpackPlugin({
+    new HtmlWebpackPlugin({ // html打包插件
       filename: config.build.index,
       template: 'index.html',
       inject: true,
       minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true
+        removeComments: true, // 删除注释
+        collapseWhitespace: true, // 删除空格
+        removeAttributeQuotes: true // 删除html属性的引号
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },

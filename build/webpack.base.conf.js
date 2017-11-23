@@ -20,6 +20,7 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
+    // 引入模块时 省去后缀
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'src': resolve('src'),
@@ -50,7 +51,7 @@ module.exports = {
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test')]
       },
-      {
+      { // 将图片转化成base64减少图片加载发送请求
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
         options: {

@@ -1,6 +1,7 @@
+// 检查版本
 require('./check-versions')()
 
-process.env.NODE_ENV = 'production'
+process.env.NODE_ENV = 'production' // 生产模式
 
 var ora = require('ora')
 var rm = require('rimraf')
@@ -13,6 +14,7 @@ var webpackConfig = require('./webpack.prod.conf')
 var spinner = ora('building for production...')
 spinner.start()
 
+// 打包之前把上次打包的文件删除掉
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
   webpack(webpackConfig, function (err, stats) {
