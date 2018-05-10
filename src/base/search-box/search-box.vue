@@ -30,6 +30,7 @@
       blur() {
         this.$refs.query.blur()
       }
+      
     },
     created() {
       // 回调监视query的值变化,通过事件派发出去
